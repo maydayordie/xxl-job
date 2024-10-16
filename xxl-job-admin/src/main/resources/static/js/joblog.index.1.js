@@ -1,7 +1,7 @@
 $(function() {
 
 	// jobGroup change, job list init and select
-	$("#jobGroup").on("change", function () {
+	$(".jobLogPage .jobGroup").on("change", function () {
 		var jobGroup = $(this).children('option:selected').val();
 		$.ajax({
 			type : 'POST',
@@ -11,12 +11,12 @@ $(function() {
 			dataType : "json",
 			success : function(data){
 				if (data.code == 200) {
-					$("#jobId").html( '<option value="0" >'+ I18n.system_all +'</option>' );
+					$(".jobLogPage .jobId").html( '<option value="0" >'+ I18n.system_all +'</option>' );
 					$.each(data.content, function (n, value) {
-                        $("#jobId").append('<option value="' + value.id + '" >' + value.jobDesc + '</option>');
+                        $(".jobLogPage .jobId").append('<option value="' + value.id + '" >' + value.jobDesc + '</option>');
                     });
-                    if ($("#jobId").attr("paramVal")){
-                        $("#jobId").find("option[value='" + $("#jobId").attr("paramVal") + "']").attr("selected",true);
+                    if ($(".jobLogPage .jobId").attr("paramVal")){
+                        $(".jobLogPage .jobId").find("option[value='" + $(".jobLogPage .jobId").attr("paramVal") + "']").attr("selected",true);
                     }
 				} else {
 					layer.open({
@@ -29,9 +29,9 @@ $(function() {
 			},
 		});
 	});
-	if ($("#jobGroup").attr("paramVal")){
-		$("#jobGroup").find("option[value='" + $("#jobGroup").attr("paramVal") + "']").attr("selected",true);
-        $("#jobGroup").change();
+	if ($(".jobLogPage .jobGroup").attr("paramVal")){
+		$(".jobLogPage .jobGroup").find("option[value='" + $(".jobLogPage .jobGroup").attr("paramVal") + "']").attr("selected",true);
+        $(".jobLogPage .jobGroup").change();
 	}
 
 	// filter Time
@@ -44,7 +44,7 @@ $(function() {
     rangesConf[I18n.daterangepicker_ranges_recent_week] = [moment().subtract(1, 'weeks').startOf('day'), moment().endOf('day')];
     rangesConf[I18n.daterangepicker_ranges_recent_month] = [moment().subtract(1, 'months').startOf('day'), moment().endOf('day')];
 
-	$('#filterTime').daterangepicker({
+	$('.jobLogPage .filterTime').daterangepicker({
         autoApply:false,
         singleDatePicker:false,
         showDropdowns:false,        // 是否显示年月选择条件
@@ -70,7 +70,7 @@ $(function() {
 	});
 
 	// init date tables
-	var logTable = $("#joblog_list").dataTable({
+	var logTable = $(".jobLogPage .joblog_list").dataTable({
 		"deferRender": true,
 		"processing" : true, 
 	    "serverSide": true,
@@ -79,10 +79,10 @@ $(function() {
             type:"post",
 	        data : function ( d ) {
 	        	var obj = {};
-	        	obj.jobGroup = $('#jobGroup').val();
-	        	obj.jobId = $('#jobId').val();
-                obj.logStatus = $('#logStatus').val();
-				obj.filterTime = $('#filterTime').val();
+	        	obj.jobGroup = $('.jobLogPage .jobGroup').val();
+	        	obj.jobId = $('.jobLogPage .jobId').val();
+                obj.logStatus = $('.jobLogPage .logStatus').val();
+				obj.filterTime = $('.jobLogPage .filterTime').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
                 return obj;
@@ -250,20 +250,20 @@ $(function() {
     });
 	
 	// logTips alert
-	$('#joblog_list').on('click', '.logTips', function(){
+	$('.jobLogPage .joblog_list').on('click', '.logTips', function(){
 		var msg = $(this).find('span').html();
 		ComAlertTec.show(msg);
 	});
 	
 	// search Btn
-	$('#searchBtn').on('click', function(){
+	$('.jobLogPage .searchBtn').on('click', function(){
 		logTable.fnDraw();
 	});
 	
 	// logDetail look
 	// 发送执行日志的请求
 	// 数据从Json的data 到row 再到_id 再到var_id 再传到请求里
-	$('#joblog_list').on('click', '.logDetail', function(){
+	$('.jobLogPage .joblog_list').on('click', '.logDetail', function(){
 		var _id = $(this).attr('_id');
 		
 		window.open(base_url + '/joblog/logDetailPage?id=' + _id);
@@ -276,7 +276,7 @@ $(function() {
 	 * 点击超链接时 发送logKill请求
 	 * 根据当前行的任务id，发送终止任务请求
 	 */
-	$('#joblog_list').on('click', '.logKill', function(){
+	$('.jobLogPage .joblog_list').on('click', '.logKill', function(){
 		var _id = $(this).attr('_id');
 
 		// 确认终止弹窗
@@ -324,31 +324,31 @@ $(function() {
 	 * clear Log
 	 * 指定ftl的清理按钮 点击时弹出拟模态框
 	 */
-	$('#clearLog').on('click', function(){
+	$('.jobLogPage .clearLog').on('click', function(){
 
-		var jobGroup = $('#jobGroup').val();
-		var jobId = $('#jobId').val();
+		var jobGroup = $('.jobLogPage .jobGroup').val();
+		var jobId = $('.jobLogPage .jobId').val();
 
-		var jobGroupText = $("#jobGroup").find("option:selected").text();
-		var jobIdText = $("#jobId").find("option:selected").text();
+		var jobGroupText = $(".jobLogPage .jobGroup").find("option:selected").text();
+		var jobIdText = $(".jobLogPage .jobId").find("option:selected").text();
 
 		// 将日志的var传到模态框的输入栏中
-		$('#clearLogModal input[name=jobGroup]').val(jobGroup);
-		$('#clearLogModal input[name=jobId]').val(jobId);
+		$('.jobLogPage .clearLogModal input[name=jobGroup]').val(jobGroup);
+		$('.jobLogPage .clearLogModal input[name=jobId]').val(jobId);
 
-		$('#clearLogModal .jobGroupText').val(jobGroupText);
-		$('#clearLogModal .jobIdText').val(jobIdText);
+		$('.jobLogPage .clearLogModal .jobGroupText').val(jobGroupText);
+		$('.jobLogPage .clearLogModal .jobIdText').val(jobIdText);
 
 		// 手动打开模态框
-		$('#clearLogModal').modal('show');
+		$('.jobLogPage .clearLogModal').modal('show');
 
 	});
 	// 按下模态框的确认按钮后 发送清理日志的请求
-	$("#clearLogModal .ok").on('click', function(){
-		$.post(base_url + "/joblog/clearLog",  $("#clearLogModal .form").serialize(), function(data, status) {
+	$(".jobLogPage .clearLogModal .ok").on('click', function(){
+		$.post(base_url + "/joblog/clearLog",  $(".jobLogPage .clearLogModal .form").serialize(), function(data, status) {
 			// 返回的TReturn.code为成功时 手动隐藏模态框
 			if (data.code == "200") {
-				$('#clearLogModal').modal('hide');
+				$('.jobLogPage .clearLogModal').modal('hide');
 				// 提示："日志清理成功"
 				layer.open({
 					title: I18n.system_tips ,
@@ -373,8 +373,8 @@ $(function() {
 	});
 	// 模态框完全消失后触发
 	// 重置表单的数据
-	$("#clearLogModal").on('hide.bs.modal', function () {
-		$("#clearLogModal .form")[0].reset();
+	$(".jobLogPage .clearLogModal").on('hide.bs.modal', function () {
+		$(".jobLogPage .clearLogModal .form")[0].reset();
 	});
 
 });
@@ -403,16 +403,16 @@ var ComAlertTec = {
 	},
 	show:function(msg, callback){
 		// dom init
-		if ($('#ComAlertTec').length == 0){
+		if ($('.jobLogPage .ComAlertTec').length == 0){
 			$('body').append(ComAlertTec.html());
 		}
 
 		// init com alert
-		$('#ComAlertTec .alert').html(msg);
-		$('#ComAlertTec').modal('show');
+		$('.jobLogPage .ComAlertTec .alert').html(msg);
+		$('.jobLogPage .ComAlertTec').modal('show');
 
-		$('#ComAlertTec .ok').click(function(){
-			$('#ComAlertTec').modal('hide');
+		$('.jobLogPage .ComAlertTec .ok').click(function(){
+			$('.jobLogPage .ComAlertTec').modal('hide');
 			if(typeof callback == 'function') {
 				callback();
 			}

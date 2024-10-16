@@ -1,7 +1,7 @@
 $(function() {
 
 	// 监听执行器的change 负责初始化任务列表 和 根据执行器查找任务列表
-	$("#jobGroup").on("change", function () {
+	$(".jobAlarmPage .jobGroup").on("change", function () {
 		// 被选择的option执行器id
 		var jobGroup = $(this).children('option:selected').val();
 		// 请求：该执行器的任务列表
@@ -14,15 +14,15 @@ $(function() {
 			success : function(data){
 				// data.code 成功 data.content 根据执行器查找到的任务列表
 				if (data.code == 200) {
-					$("#jobId").html( '<option value="0" >'+ I18n.system_all +'</option>' );
+					$(".jobAlarmPage .jobId").html( '<option value="0" >'+ I18n.system_all +'</option>' );
 					// 遍历任务信息列表
 					$.each(data.content, function (n, value) {
 						// 下拉框添加 值为任务信息id 内容为任务描述
-                        $("#jobId").append('<option value="' + value.id + '" >' + value.jobDesc + '</option>');
+                        $(".jobAlarmPage .jobId").append('<option value="' + value.id + '" >' + value.jobDesc + '</option>');
                     });
 					// JobInfo存在时
-                    if ($("#jobId").attr("paramVal")){
-                        $("#jobId").find("option[value='" + $("#jobId").attr("paramVal") + "']").attr("selected",true);
+                    if ($(".jobAlarmPage .jobId").attr("paramVal")){
+                        $(".jobAlarmPage .jobId").find("option[value='" + $(".jobAlarmPage .jobId").attr("paramVal") + "']").attr("selected",true);
                     }
 				} else {
 					layer.open({
@@ -36,9 +36,9 @@ $(function() {
 		});
 	});
 	// JobInfo存在时
-	if ($("#jobGroup").attr("paramVal")){
-		$("#jobGroup").find("option[value='" + $("#jobGroup").attr("paramVal") + "']").attr("selected",true);
-        $("#jobGroup").change();
+	if ($(".jobAlarmPage .jobGroup").attr("paramVal")){
+		$(".jobAlarmPage .jobGroup").find("option[value='" + $(".jobAlarmPage .jobGroup").attr("paramVal") + "']").attr("selected",true);
+        $(".jobAlarmPage .jobGroup").change();
 	}
 
 	// filter Time
@@ -51,7 +51,7 @@ $(function() {
     rangesConf[I18n.daterangepicker_ranges_recent_week] = [moment().subtract(1, 'weeks').startOf('day'), moment().endOf('day')];
     rangesConf[I18n.daterangepicker_ranges_recent_month] = [moment().subtract(1, 'months').startOf('day'), moment().endOf('day')];
 
-	$('#filterTime').daterangepicker({
+	$('.jobAlarmPage .filterTime').daterangepicker({
         autoApply:false,
         singleDatePicker:false,
         showDropdowns:false,        // 是否显示年月选择条件
@@ -77,7 +77,7 @@ $(function() {
 	});
 
 	// init date tables
-	var logTable = $("#joblog_list").dataTable({
+	var logTable = $(".jobAlarmPage .joblog_list").dataTable({
 		"deferRender": true,
 		"processing" : true,
 	    "serverSide": true,
@@ -86,10 +86,10 @@ $(function() {
             type:"post",
 	        data : function ( d ) {
 	        	var obj = {};
-	        	obj.jobGroup = $('#jobGroup').val();
-	        	obj.jobId = $('#jobId').val();
-                obj.alarmType = $('#alarmType').val();
-				obj.filterTime = $('#filterTime').val();
+	        	obj.jobGroup = $('.jobAlarmPage .jobGroup').val();
+	        	obj.jobId = $('.jobAlarmPage .jobId').val();
+                obj.alarmType = $('.jobAlarmPage .alarmType').val();
+				obj.filterTime = $('.jobAlarmPage .filterTime').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
                 return obj;
@@ -187,14 +187,14 @@ $(function() {
 	// logTips alert
 	// .logTips:jobId列属性 'click':监听点击事件
 	// span:未显示的子标签保存了任务参数 ComAlertTec:自定义的浮窗
-	$('#joblog_list').on('click', '.logTips', function(){
+	$('.jobAlarmPage .joblog_list').on('click', '.logTips', function(){
 		var msg = $(this).find('span').html();
 		ComAlertTec.show(msg);
 	});
 	
 	// search Btn
 	// 搜索按钮
-	$('#searchBtn').on('click', function(){
+	$('.jobAlarmPage .searchBtn').on('click', function(){
 		logTable.fnDraw();
 	});
 
@@ -225,18 +225,18 @@ var ComAlertTec = {
 	},
 	show:function(msg, callback){
 		// dom init
-		if ($('#ComAlertTec').length == 0){
+		if ($('.jobAlarmPage .ComAlertTec').length == 0){
 			$('body').append(ComAlertTec.html());
 		}
 
 		// init com alert
 		// 往弹窗模板中加入信息
 		// 如id信息 调度信息 执行信息
-		$('#ComAlertTec .alert').html(msg);
-		$('#ComAlertTec').modal('show');
+		$('.jobAlarmPage .ComAlertTec .alert').html(msg);
+		$('.jobAlarmPage .ComAlertTec').modal('show');
 
-		$('#ComAlertTec .ok').click(function(){
-			$('#ComAlertTec').modal('hide');
+		$('.jobAlarmPage .ComAlertTec .ok').click(function(){
+			$('.jobAlarmPage .ComAlertTec').modal('hide');
 			if(typeof callback == 'function') {
 				callback();
 			}

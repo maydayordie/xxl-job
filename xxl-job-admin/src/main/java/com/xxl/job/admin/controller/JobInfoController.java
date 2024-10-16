@@ -90,6 +90,7 @@ public class JobInfoController {
 		}
 		return jobGroupList;
 	}
+
 	public static void validPermission(HttpServletRequest request, int jobGroup) {
 		XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 		if (!loginUser.validPermission(jobGroup)) {

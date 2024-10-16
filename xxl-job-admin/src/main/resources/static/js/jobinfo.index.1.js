@@ -1,7 +1,7 @@
 $(function() {
 
 	// init date tables
-	var jobTable = $("#job_list").dataTable({
+	var jobTable = $(".jobInfoPage .job_list").dataTable({
 		"deferRender": true,
 		"processing" : true,
 	    "serverSide": true,
@@ -11,17 +11,17 @@ $(function() {
 	        data : function ( d ) {
 	        	var obj = {};
 				obj.jobGroup = 0
-				var jobGroupTitle = $('#jobGroup').val();
+				var jobGroupTitle = $('.jobInfoPage .jobGroup').val();
 				if (jobGroupTitle){
-					var jobGroupId = $('#jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id')
+					var jobGroupId = $('.jobInfoPage .jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id')
 					if (jobGroupId){
 						obj.jobGroup = jobGroupId
 					}
 				}
-                obj.triggerStatus = $('#triggerStatus').val();
-                obj.jobDesc = $('#jobDesc').val();
-	        	obj.executorHandler = $('#executorHandler').val();
-                obj.author = $('#author').val();
+                obj.triggerStatus = $('.jobInfoPage .triggerStatus').val();
+                obj.jobDesc = $('.jobInfoPage .jobDesc').val();
+	        	obj.executorHandler = $('.jobInfoPage .executorHandler').val();
+                obj.author = $('.jobInfoPage .author').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
                 return obj;
@@ -189,15 +189,15 @@ $(function() {
     var tableData = {};
 
 	// search btn
-	$('#searchBtn').on('click', function(){
+	$('.jobInfoPage .searchBtn').on('click', function(){
 		jobTable.fnDraw();
 	});
 
 	// jobGroup change
-	$('#jobGroup').on('change', function(){
-        var jobGroupTitle = $('#jobGroup').val()
+	$('.jobInfoPage .jobGroup').on('change', function(){
+        var jobGroupTitle = $('.jobInfoPage .jobGroup').val()
 		if (jobGroupTitle){
-			var jobGroup = $('#jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id');
+			var jobGroup = $('.jobInfoPage .jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id');
 			if (jobGroup){
 				window.location.href = base_url + "/jobinfo?jobGroup=" + jobGroup;
 			}
@@ -205,7 +205,7 @@ $(function() {
     });
 
 	// job operate
-	$("#job_list").on('click', '.job_operate',function() {
+	$(".jobInfoPage .job_list").on('click', '.job_operate',function() {
 		var typeName;
 		var url;
 		var needFresh = false;
@@ -259,28 +259,28 @@ $(function() {
 	});
 
     // job trigger
-    $("#job_list").on('click', '.job_trigger',function() {
+    $(".jobInfoPage .job_list").on('click', '.job_trigger',function() {
         var id = $(this).parents('ul').attr("_id");
         var row = tableData['key'+id];
 
-        $("#jobTriggerModal .form input[name='id']").val( row.id );
-        $("#jobTriggerModal .form textarea[name='executorParam']").val( row.executorParam );
+        $(".jobInfoPage .jobTriggerModal .form input[name='id']").val( row.id );
+        $(".jobInfoPage .jobTriggerModal .form textarea[name='executorParam']").val( row.executorParam );
 
-        $('#jobTriggerModal').modal({backdrop: false, keyboard: false}).modal('show');
+        $('.jobInfoPage .jobTriggerModal').modal({backdrop: false, keyboard: false}).modal('show');
     });
-    $("#jobTriggerModal .ok").on('click',function() {
+    $(".jobInfoPage .jobTriggerModal .ok").on('click',function() {
         $.ajax({
             type : 'POST',
             url : base_url + "/jobinfo/trigger",
             data : {
-                "id" : $("#jobTriggerModal .form input[name='id']").val(),
-                "executorParam" : $("#jobTriggerModal .textarea[name='executorParam']").val(),
-				"addressList" : $("#jobTriggerModal .textarea[name='addressList']").val()
+                "id" : $(".jobInfoPage .jobTriggerModal .form input[name='id']").val(),
+                "executorParam" : $(".jobInfoPage .jobTriggerModal .textarea[name='executorParam']").val(),
+				"addressList" : $(".jobInfoPage .jobTriggerModal .textarea[name='addressList']").val()
             },
             dataType : "json",
             success : function(data){
                 if (data.code == 200) {
-                    $('#jobTriggerModal').modal('hide');
+                    $('.jobInfoPage .jobTriggerModal').modal('hide');
 
                     layer.msg( I18n.jobinfo_opt_run + I18n.system_success );
                 } else {
@@ -289,13 +289,13 @@ $(function() {
             }
         });
     });
-    $("#jobTriggerModal").on('hide.bs.modal', function () {
-        $("#jobTriggerModal .form")[0].reset();
+    $(".jobInfoPage .jobTriggerModal").on('hide.bs.modal', function () {
+        $(".jobInfoPage .jobTriggerModal .form")[0].reset();
     });
 
 
     // job registryinfo
-    $("#job_list").on('click', '.job_registryinfo',function() {
+    $(".jobInfoPage .job_list").on('click', '.job_registryinfo',function() {
         var id = $(this).parents('ul').attr("_id");
         var row = tableData['key'+id];
 
@@ -330,7 +330,7 @@ $(function() {
     });
 
     // job_next_time
-    $("#job_list").on('click', '.job_next_time',function() {
+    $(".jobInfoPage .job_list").on('click', '.job_next_time',function() {
         var id = $(this).parents('ul').attr("_id");
         var row = tableData['key'+id];
 
@@ -373,25 +373,25 @@ $(function() {
 
 	// 页面加载时显示模态框
 	$(document).ready(function() {
-		$('#testModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobInfoPage .testModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 
 	// add
 	$(".add").click(function(){
 
 		// init-cronGen
-        $("#addModal .form input[name='schedule_conf_CRON']").show().siblings().remove();
-        $("#addModal .form input[name='schedule_conf_CRON']").cronGen({});
+        $(".jobInfoPage .addModal .form input[name='schedule_conf_CRON']").show().siblings().remove();
+        $(".jobInfoPage .addModal .form input[name='schedule_conf_CRON']").cronGen({});
 
 		// 》init scheduleType
-		$("#updateModal .form select[name=scheduleType]").change();
+		$(".jobInfoPage .updateModal .form select[name=scheduleType]").change();
 
 		// 》init glueType
-		$("#updateModal .form select[name=glueType]").change();
+		$(".jobInfoPage .updateModal .form select[name=glueType]").change();
 
-		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobInfoPage .addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
-	var addModalValidate = $("#addModal .form").validate({
+	var addModalValidate = $(".jobInfoPage .addModal .form").validate({
 		errorElement : 'span',
         errorClass : 'help-block',
         focusInvalid : true,
@@ -437,33 +437,33 @@ $(function() {
         submitHandler : function(form) {
 
 			// process executorTimeout+executorFailRetryCount
-            var executorTimeout = $("#addModal .form input[name='executorTimeout']").val();
+            var executorTimeout = $(".jobInfoPage .addModal .form input[name='executorTimeout']").val();
             if(!/^\d+$/.test(executorTimeout)) {
                 executorTimeout = 0;
 			}
-            $("#addModal .form input[name='executorTimeout']").val(executorTimeout);
-            var executorFailRetryCount = $("#addModal .form input[name='executorFailRetryCount']").val();
+            $(".jobInfoPage .addModal .form input[name='executorTimeout']").val(executorTimeout);
+            var executorFailRetryCount = $(".jobInfoPage .addModal .form input[name='executorFailRetryCount']").val();
             if(!/^\d+$/.test(executorFailRetryCount)) {
                 executorFailRetryCount = 0;
             }
-            $("#addModal .form input[name='executorFailRetryCount']").val(executorFailRetryCount);
+            $(".jobInfoPage .addModal .form input[name='executorFailRetryCount']").val(executorFailRetryCount);
 
             // process schedule_conf
-			var scheduleType = $("#addModal .form select[name='scheduleType']").val();
+			var scheduleType = $(".jobInfoPage .addModal .form select[name='scheduleType']").val();
 			var scheduleConf;
 			if (scheduleType == 'CRON') {
-				scheduleConf = $("#addModal .form input[name='cronGen_display']").val();
+				scheduleConf = $(".jobInfoPage .addModal .form input[name='cronGen_display']").val();
 			} else if (scheduleType == 'FIX_RATE') {
-				scheduleConf = $("#addModal .form input[name='schedule_conf_FIX_RATE']").val();
+				scheduleConf = $(".jobInfoPage .addModal .form input[name='schedule_conf_FIX_RATE']").val();
 			} else if (scheduleType == 'FIX_DELAY') {
-				scheduleConf = $("#addModal .form input[name='schedule_conf_FIX_DELAY']").val();
+				scheduleConf = $(".jobInfoPage .addModal .form input[name='schedule_conf_FIX_DELAY']").val();
 			}
-			$("#addModal .form input[name='scheduleConf']").val( scheduleConf );
+			$(".jobInfoPage .addModal .form input[name='scheduleConf']").val( scheduleConf );
 
-        	$.post(base_url + "/jobinfo/add",  $("#addModal .form").serialize(), function(data, status) {
+        	$.post(base_url + "/jobinfo/add",  $(".jobInfoPage .addModal .form").serialize(), function(data, status) {
 				// 任务添加成功
     			if (data.code == "200") {
-					$('#addModal').modal('hide');
+					$('.jobInfoPage .addModal').modal('hide');
 					layer.open({
 						title: I18n.system_tips ,
                         btn: [ I18n.system_ok ],
@@ -487,13 +487,13 @@ $(function() {
 		}
 	});
 	// 当模态框完全时 重置表单
-	$("#addModal").on('hide.bs.modal', function () {
+	$(".jobInfoPage .addModal").on('hide.bs.modal', function () {
         addModalValidate.resetForm();
-		$("#addModal .form")[0].reset();
-		$("#addModal .form .form-group").removeClass("has-error");
+		$(".jobInfoPage .addModal .form")[0].reset();
+		$(".jobInfoPage .addModal .form .form-group").removeClass("has-error");
 		$(".remote_panel").show();	// remote
 
-		$("#addModal .form input[name='executorHandler']").removeAttr("readonly");
+		$(".jobInfoPage .addModal .form input[name='executorHandler']").removeAttr("readonly");
 	});
 
 	// scheduleType change
@@ -505,13 +505,13 @@ $(function() {
 	});
 ///////////////////////////
 	// 消息id框显示隐藏
-	$("#updateModal .form input[name='alarmFlag']").change(function(){
+	$(".jobInfoPage .updateModal .form input[name='alarmFlag']").change(function(){
 		if ($(this).is(':checked')){
-			$(this).parents("form").find("#messageId").show();
-			$("#updateModal .form input[name='messageId']").prop("disabled", false);
+			$(this).parents("form").find(".jobInfoPage .messageId").show();
+			$(".jobInfoPage .updateModal .form input[name='messageId']").prop("disabled", false);
 		}else {
-			$(this).parents("form").find("#messageId").hide();
-			$("#updateModal .form input[name='messageId']").prop("disabled", true);
+			$(this).parents("form").find(".jobInfoPage .messageId").hide();
+			$(".jobInfoPage .updateModal .form input[name='messageId']").prop("disabled", true);
 		}
 	});
 /////////////////////////
@@ -529,94 +529,94 @@ $(function() {
         }
     });
 
-	$("#addModal .glueType").change(function(){
+	$(".jobInfoPage .addModal .glueType").change(function(){
 		// glueSource
 		var glueType = $(this).val();
 		if ('GLUE_GROOVY'==glueType){
-			$("#addModal .form textarea[name='glueSource']").val( $("#addModal .form .glueSource_java").val() );
+			$(".jobInfoPage .addModal .form textarea[name='glueSource']").val( $(".jobInfoPage .addModal .form .glueSource_java").val() );
 		} else if ('GLUE_SHELL'==glueType){
-			$("#addModal .form textarea[name='glueSource']").val( $("#addModal .form .glueSource_shell").val() );
+			$(".jobInfoPage .addModal .form textarea[name='glueSource']").val( $(".jobInfoPage .addModal .form .glueSource_shell").val() );
 		} else if ('GLUE_PYTHON'==glueType){
-			$("#addModal .form textarea[name='glueSource']").val( $("#addModal .form .glueSource_python").val() );
+			$(".jobInfoPage .addModal .form textarea[name='glueSource']").val( $(".jobInfoPage .addModal .form .glueSource_python").val() );
 		} else if ('GLUE_PHP'==glueType){
-            $("#addModal .form textarea[name='glueSource']").val( $("#addModal .form .glueSource_php").val() );
+            $(".jobInfoPage .addModal .form textarea[name='glueSource']").val( $(".jobInfoPage .addModal .form .glueSource_php").val() );
         } else if ('GLUE_NODEJS'==glueType){
-			$("#addModal .form textarea[name='glueSource']").val( $("#addModal .form .glueSource_nodejs").val() );
+			$(".jobInfoPage .addModal .form textarea[name='glueSource']").val( $(".jobInfoPage .addModal .form .glueSource_nodejs").val() );
 		} else if ('GLUE_POWERSHELL'==glueType){
-            $("#addModal .form textarea[name='glueSource']").val( $("#addModal .form .glueSource_powershell").val() );
+            $(".jobInfoPage .addModal .form textarea[name='glueSource']").val( $(".jobInfoPage .addModal .form .glueSource_powershell").val() );
         } else {
-            $("#addModal .form textarea[name='glueSource']").val("");
+            $(".jobInfoPage .addModal .form textarea[name='glueSource']").val("");
 		}
 	});
 
 	// update
-	$("#job_list").on('click', '.update',function() {
+	$(".jobInfoPage .job_list").on('click', '.update',function() {
 
         var id = $(this).parents('ul').attr("_id");
         var row = tableData['key'+id];
 
 		// fill base
-		$("#updateModal .form input[name='id']").val( row.id );
-		$('#updateModal .form select[name=jobGroup] option[value='+ row.jobGroup +']').prop('selected', true);
-		$("#updateModal .form input[name='jobDesc']").val( row.jobDesc );
-		$("#updateModal .form input[name='author']").val( row.author );
-		$("#updateModal .form input[name='alarmEmail']").val( row.alarmEmail );
+		$(".jobInfoPage .updateModal .form input[name='id']").val( row.id );
+		$('.jobInfoPage .updateModal .form select[name=jobGroup] option[value='+ row.jobGroup +']').prop('selected', true);
+		$(".jobInfoPage .updateModal .form input[name='jobDesc']").val( row.jobDesc );
+		$(".jobInfoPage .updateModal .form input[name='author']").val( row.author );
+		$(".jobInfoPage .updateModal .form input[name='alarmEmail']").val( row.alarmEmail );
 ///////////////////////////////
 		$(document).ready(function() {
 			console.log(row);
 		});
 		// 初始化滑动开关是否选中
 		if (row.alarmFlag == '1'){
-			$("#updateModal .form input[name='alarmFlag']").prop("checked", true);
+			$(".jobInfoPage .updateModal .form input[name='alarmFlag']").prop("checked", true);
 		} else{
-			$("#updateModal .form input[name='alarmFlag']").prop("checked", false);
+			$(".jobInfoPage .updateModal .form input[name='alarmFlag']").prop("checked", false);
 		}
 		// 初始化消息id
-		$("#updateModal .form input[name='messageId']").val( row.messageId );
+		$(".jobInfoPage .updateModal .form input[name='messageId']").val( row.messageId );
 		// 初始化消息id框显示隐藏
-		$("#updateModal .form input[name='alarmFlag']").change();
+		$(".jobInfoPage .updateModal .form input[name='alarmFlag']").change();
 /////////////////////////////////////
 		// fill trigger
-		$('#updateModal .form select[name=scheduleType] option[value='+ row.scheduleType +']').prop('selected', true);
-		$("#updateModal .form input[name='scheduleConf']").val( row.scheduleConf );
+		$('.jobInfoPage .updateModal .form select[name=scheduleType] option[value='+ row.scheduleType +']').prop('selected', true);
+		$(".jobInfoPage .updateModal .form input[name='scheduleConf']").val( row.scheduleConf );
 		if (row.scheduleType == 'CRON') {
-			$("#updateModal .form input[name='schedule_conf_CRON']").val( row.scheduleConf );
+			$(".jobInfoPage .updateModal .form input[name='schedule_conf_CRON']").val( row.scheduleConf );
 		} else if (row.scheduleType == 'FIX_RATE') {
-			$("#updateModal .form input[name='schedule_conf_FIX_RATE']").val( row.scheduleConf );
+			$(".jobInfoPage .updateModal .form input[name='schedule_conf_FIX_RATE']").val( row.scheduleConf );
 		} else if (row.scheduleType == 'FIX_DELAY') {
-			$("#updateModal .form input[name='schedule_conf_FIX_DELAY']").val( row.scheduleConf );
+			$(".jobInfoPage .updateModal .form input[name='schedule_conf_FIX_DELAY']").val( row.scheduleConf );
 		}
 
 		// 》init scheduleType
 		// 因为Conf的值只有在change后才有 所以加载页面时需要change获取Conf值
-		$("#updateModal .form select[name=scheduleType]").change();
+		$(".jobInfoPage .updateModal .form select[name=scheduleType]").change();
 
 		// fill job
-		$('#updateModal .form select[name=glueType] option[value='+ row.glueType +']').prop('selected', true);
-		$("#updateModal .form input[name='executorHandler']").val( row.executorHandler );
-		$("#updateModal .form textarea[name='executorParam']").val( row.executorParam );
+		$('.jobInfoPage .updateModal .form select[name=glueType] option[value='+ row.glueType +']').prop('selected', true);
+		$(".jobInfoPage .updateModal .form input[name='executorHandler']").val( row.executorHandler );
+		$(".jobInfoPage .updateModal .form textarea[name='executorParam']").val( row.executorParam );
 
 		// 》init glueType
-		$("#updateModal .form select[name=glueType]").change();
+		$(".jobInfoPage .updateModal .form select[name=glueType]").change();
 
 		// 》init-cronGen
-		$("#updateModal .form input[name='schedule_conf_CRON']").show().siblings().remove();
-		$("#updateModal .form input[name='schedule_conf_CRON']").cronGen({});
+		$(".jobInfoPage .updateModal .form input[name='schedule_conf_CRON']").show().siblings().remove();
+		$(".jobInfoPage .updateModal .form input[name='schedule_conf_CRON']").cronGen({});
 
 		// fill advanced
-		$('#updateModal .form select[name=executorRouteStrategy] option[value='+ row.executorRouteStrategy +']').prop('selected', true);
-		$("#updateModal .form input[name='childJobId']").val( row.childJobId );
-		$('#updateModal .form select[name=misfireStrategy] option[value='+ row.misfireStrategy +']').prop('selected', true);
-		$('#updateModal .form select[name=executorBlockStrategy] option[value='+ row.executorBlockStrategy +']').prop('selected', true);
-		$("#updateModal .form input[name='executorTimeout']").val( row.executorTimeout );
-        $("#updateModal .form input[name='executorFailRetryCount']").val( row.executorFailRetryCount );
-        // $("#updateModal .form input[name='alarmFlag']").val( 'on' );
+		$('.jobInfoPage .updateModal .form select[name=executorRouteStrategy] option[value='+ row.executorRouteStrategy +']').prop('selected', true);
+		$(".jobInfoPage .updateModal .form input[name='childJobId']").val( row.childJobId );
+		$('.jobInfoPage .updateModal .form select[name=misfireStrategy] option[value='+ row.misfireStrategy +']').prop('selected', true);
+		$('.jobInfoPage .updateModal .form select[name=executorBlockStrategy] option[value='+ row.executorBlockStrategy +']').prop('selected', true);
+		$(".jobInfoPage .updateModal .form input[name='executorTimeout']").val( row.executorTimeout );
+        $(".jobInfoPage .updateModal .form input[name='executorFailRetryCount']").val( row.executorFailRetryCount );
+        // $(".jobInfoPage .updateModal .form input[name='alarmFlag']").val( 'on' );
 
 		// show
-		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobInfoPage .updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 
-	var updateModalValidate = $("#updateModal .form").validate({
+	var updateModalValidate = $(".jobInfoPage .updateModal .form").validate({
 		errorElement : 'span',
         errorClass : 'help-block',
         focusInvalid : true,
@@ -651,34 +651,34 @@ $(function() {
         submitHandler : function(form) {
 
             // process executorTimeout + executorFailRetryCount
-            var executorTimeout = $("#updateModal .form input[name='executorTimeout']").val();
+            var executorTimeout = $(".jobInfoPage .updateModal .form input[name='executorTimeout']").val();
             if(!/^\d+$/.test(executorTimeout)) {
                 executorTimeout = 0;
             }
-            $("#updateModal .form input[name='executorTimeout']").val(executorTimeout);
-            var executorFailRetryCount = $("#updateModal .form input[name='executorFailRetryCount']").val();
+            $(".jobInfoPage .updateModal .form input[name='executorTimeout']").val(executorTimeout);
+            var executorFailRetryCount = $(".jobInfoPage .updateModal .form input[name='executorFailRetryCount']").val();
             if(!/^\d+$/.test(executorFailRetryCount)) {
                 executorFailRetryCount = 0;
             }
-            $("#updateModal .form input[name='executorFailRetryCount']").val(executorFailRetryCount);
+            $(".jobInfoPage .updateModal .form input[name='executorFailRetryCount']").val(executorFailRetryCount);
 
 			// process schedule_conf
-			var scheduleType = $("#updateModal .form select[name='scheduleType']").val();
+			var scheduleType = $(".jobInfoPage .updateModal .form select[name='scheduleType']").val();
 			var scheduleConf;
 			if (scheduleType == 'CRON') {
-				scheduleConf = $("#updateModal .form input[name='cronGen_display']").val();
+				scheduleConf = $(".jobInfoPage .updateModal .form input[name='cronGen_display']").val();
 			} else if (scheduleType == 'FIX_RATE') {
-				scheduleConf = $("#updateModal .form input[name='schedule_conf_FIX_RATE']").val();
+				scheduleConf = $(".jobInfoPage .updateModal .form input[name='schedule_conf_FIX_RATE']").val();
 			} else if (scheduleType == 'FIX_DELAY') {
-				scheduleConf = $("#updateModal .form input[name='schedule_conf_FIX_DELAY']").val();
+				scheduleConf = $(".jobInfoPage .updateModal .form input[name='schedule_conf_FIX_DELAY']").val();
 			}
-			$("#updateModal .form input[name='scheduleConf']").val( scheduleConf );
+			$(".jobInfoPage .updateModal .form input[name='scheduleConf']").val( scheduleConf );
 
 			// post
-    		$.post(base_url + "/jobinfo/update", $("#updateModal .form").serialize(), function(data, status) {
+    		$.post(base_url + "/jobinfo/update", $(".jobInfoPage .updateModal .form").serialize(), function(data, status) {
 				// 更新成功弹窗 icon打勾勾
     			if (data.code == "200") {
-					$('#updateModal').modal('hide');
+					$('.jobInfoPage .updateModal').modal('hide');
 					layer.open({
 						title: I18n.system_tips ,
                         btn: [ I18n.system_ok ],
@@ -702,10 +702,10 @@ $(function() {
 		}
 	});
 	// 更新框完全隐藏时 重置表单
-	$("#updateModal").on('hide.bs.modal', function () {
+	$(".jobInfoPage .updateModal").on('hide.bs.modal', function () {
         updateModalValidate.resetForm();
-        $("#updateModal .form")[0].reset();
-        $("#updateModal .form .form-group").removeClass("has-error");
+        $(".jobInfoPage .updateModal .form")[0].reset();
+        $(".jobInfoPage .updateModal .form .form-group").removeClass("has-error");
 	});
 
     /**
@@ -713,7 +713,7 @@ $(function() {
      */
 	function findGlueTypeTitle(glueType) {
 		var glueTypeTitle;
-        $("#addModal .form select[name=glueType] option").each(function () {
+        $(".jobInfoPage .addModal .form select[name=glueType] option").each(function () {
             var name = $(this).val();
             var title = $(this).text();
             if (glueType == name) {
@@ -725,52 +725,52 @@ $(function() {
     }
 
     // job_copy
-	$("#job_list").on('click', '.job_copy',function() {
+	$(".jobInfoPage .job_list").on('click', '.job_copy',function() {
 
 		var id = $(this).parents('ul').attr("_id");
 		var row = tableData['key'+id];
 
 		// fill base
-		$('#addModal .form select[name=jobGroup] option[value='+ row.jobGroup +']').prop('selected', true);
-		$("#addModal .form input[name='jobDesc']").val( row.jobDesc );
-		$("#addModal .form input[name='author']").val( row.author );
-		$("#addModal .form input[name='alarmEmail']").val( row.alarmEmail );
+		$('.jobInfoPage .addModal .form select[name=jobGroup] option[value='+ row.jobGroup +']').prop('selected', true);
+		$(".jobInfoPage .addModal .form input[name='jobDesc']").val( row.jobDesc );
+		$(".jobInfoPage .addModal .form input[name='author']").val( row.author );
+		$(".jobInfoPage .addModal .form input[name='alarmEmail']").val( row.alarmEmail );
 
 		// fill trigger
-		$('#addModal .form select[name=scheduleType] option[value='+ row.scheduleType +']').prop('selected', true);
-		$("#addModal .form input[name='scheduleConf']").val( row.scheduleConf );
+		$('.jobInfoPage .addModal .form select[name=scheduleType] option[value='+ row.scheduleType +']').prop('selected', true);
+		$(".jobInfoPage .addModal .form input[name='scheduleConf']").val( row.scheduleConf );
 		if (row.scheduleType == 'CRON') {
-			$("#addModal .form input[name='schedule_conf_CRON']").val( row.scheduleConf );
+			$(".jobInfoPage .addModal .form input[name='schedule_conf_CRON']").val( row.scheduleConf );
 		} else if (row.scheduleType == 'FIX_RATE') {
-			$("#addModal .form input[name='schedule_conf_FIX_RATE']").val( row.scheduleConf );
+			$(".jobInfoPage .addModal .form input[name='schedule_conf_FIX_RATE']").val( row.scheduleConf );
 		} else if (row.scheduleType == 'FIX_DELAY') {
-			$("#addModal .form input[name='schedule_conf_FIX_DELAY']").val( row.scheduleConf );
+			$(".jobInfoPage .addModal .form input[name='schedule_conf_FIX_DELAY']").val( row.scheduleConf );
 		}
 
 		// 》init scheduleType
-		$("#addModal .form select[name=scheduleType]").change();
+		$(".jobInfoPage .addModal .form select[name=scheduleType]").change();
 
 		// fill job
-		$('#addModal .form select[name=glueType] option[value='+ row.glueType +']').prop('selected', true);
-		$("#addModal .form input[name='executorHandler']").val( row.executorHandler );
-		$("#addModal .form textarea[name='executorParam']").val( row.executorParam );
+		$('.jobInfoPage .addModal .form select[name=glueType] option[value='+ row.glueType +']').prop('selected', true);
+		$(".jobInfoPage .addModal .form input[name='executorHandler']").val( row.executorHandler );
+		$(".jobInfoPage .addModal .form textarea[name='executorParam']").val( row.executorParam );
 
 		// 》init glueType
-		$("#addModal .form select[name=glueType]").change();
+		$(".jobInfoPage .addModal .form select[name=glueType]").change();
 
 		// 》init-cronGen
-		$("#addModal .form input[name='schedule_conf_CRON']").show().siblings().remove();
-		$("#addModal .form input[name='schedule_conf_CRON']").cronGen({});
+		$(".jobInfoPage .addModal .form input[name='schedule_conf_CRON']").show().siblings().remove();
+		$(".jobInfoPage .addModal .form input[name='schedule_conf_CRON']").cronGen({});
 
 		// fill advanced
-		$('#addModal .form select[name=executorRouteStrategy] option[value='+ row.executorRouteStrategy +']').prop('selected', true);
-		$("#addModal .form input[name='childJobId']").val( row.childJobId );
-		$('#addModal .form select[name=misfireStrategy] option[value='+ row.misfireStrategy +']').prop('selected', true);
-		$('#addModal .form select[name=executorBlockStrategy] option[value='+ row.executorBlockStrategy +']').prop('selected', true);
-		$("#addModal .form input[name='executorTimeout']").val( row.executorTimeout );
-		$("#addModal .form input[name='executorFailRetryCount']").val( row.executorFailRetryCount );
+		$('.jobInfoPage .addModal .form select[name=executorRouteStrategy] option[value='+ row.executorRouteStrategy +']').prop('selected', true);
+		$(".jobInfoPage .addModal .form input[name='childJobId']").val( row.childJobId );
+		$('.jobInfoPage .addModal .form select[name=misfireStrategy] option[value='+ row.misfireStrategy +']').prop('selected', true);
+		$('.jobInfoPage .addModal .form select[name=executorBlockStrategy] option[value='+ row.executorBlockStrategy +']').prop('selected', true);
+		$(".jobInfoPage .addModal .form input[name='executorTimeout']").val( row.executorTimeout );
+		$(".jobInfoPage .addModal .form input[name='executorFailRetryCount']").val( row.executorFailRetryCount );
 
 		// show
-		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobInfoPage .addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 });

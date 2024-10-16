@@ -1,7 +1,7 @@
 $(function() {
 
 	// init date tables
-	var userListTable = $("#user_list").dataTable({
+	var userListTable = $(".userPage .user_list").dataTable({
 		"deferRender": true,
 		"processing" : true, 
 	    "serverSide": true,
@@ -10,8 +10,8 @@ $(function() {
 			type:"post",
 	        data : function ( d ) {
 	        	var obj = {};
-                obj.username = $('#username').val();
-                obj.role = $('#role').val();
+                obj.username = $('.userPage .username').val();
+                obj.role = $('.userPage .role').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
                 return obj;
@@ -103,12 +103,12 @@ $(function() {
     var tableData = {};
 
 	// search btn
-	$('#searchBtn').on('click', function(){
+	$('.userPage .searchBtn').on('click', function(){
         userListTable.fnDraw();
 	});
 	
 	// job operate
-	$("#user_list").on('click', '.delete',function() {
+	$(".userPage .user_list").on('click', '.delete',function() {
 		var id = $(this).parent('p').attr("id");
 
 		layer.confirm( I18n.system_ok + I18n.system_opt_del + '?', {
@@ -138,14 +138,14 @@ $(function() {
 	});
 
 	// add role
-    $("#addModal .form input[name=role]").change(function () {
+    $(".userPage .addModal .form input[name=role]").change(function () {
 		var role = $(this).val();
 		if (role == 1) {
-            $("#addModal .form input[name=permission]").parents('.form-group').hide();
+            $(".userPage .addModal .form input[name=permission]").parents('.form-group').hide();
 		} else {
-            $("#addModal .form input[name=permission]").parents('.form-group').show();
+            $(".userPage .addModal .form input[name=permission]").parents('.form-group').show();
 		}
-        $("#addModal .form input[name='permission']").prop("checked",false);
+        $(".userPage .addModal .form input[name='permission']").prop("checked",false);
     });
 
     jQuery.validator.addMethod("myValid01", function(value, element) {
@@ -156,9 +156,9 @@ $(function() {
 
 	// add
 	$(".add").click(function(){
-		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.userPage .addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
-	var addModalValidate = $("#addModal .form").validate({
+	var addModalValidate = $(".userPage .addModal .form").validate({
 		errorElement : 'span',  
         errorClass : 'help-block',
         focusInvalid : true,  
@@ -196,20 +196,20 @@ $(function() {
         submitHandler : function(form) {
 
             var permissionArr = [];
-            $("#addModal .form input[name=permission]:checked").each(function(){
+            $(".userPage .addModal .form input[name=permission]:checked").each(function(){
                 permissionArr.push($(this).val());
             });
 
 			var paramData = {
-				"username": $("#addModal .form input[name=username]").val(),
-                "password": $("#addModal .form input[name=password]").val(),
-                "role": $("#addModal .form input[name=role]:checked").val(),
+				"username": $(".userPage .addModal .form input[name=username]").val(),
+                "password": $(".userPage .addModal .form input[name=password]").val(),
+                "role": $(".userPage .addModal .form input[name=role]:checked").val(),
                 "permission": permissionArr.join(',')
 			};
 
         	$.post(base_url + "/user/add", paramData, function(data, status) {
     			if (data.code == "200") {
-					$('#addModal').modal('hide');
+					$('.userPage .addModal').modal('hide');
 
                     layer.msg( I18n.system_add_suc );
                     userListTable.fnDraw();
@@ -224,42 +224,42 @@ $(function() {
     		});
 		}
 	});
-	$("#addModal").on('hide.bs.modal', function () {
-		$("#addModal .form")[0].reset();
+	$(".userPage .addModal").on('hide.bs.modal', function () {
+		$(".userPage .addModal .form")[0].reset();
 		addModalValidate.resetForm();
-		$("#addModal .form .form-group").removeClass("has-error");
+		$(".userPage .addModal .form .form-group").removeClass("has-error");
 		$(".remote_panel").show();	// remote
 
-        $("#addModal .form input[name=permission]").parents('.form-group').show();
+        $(".userPage .addModal .form input[name=permission]").parents('.form-group').show();
 	});
 
     // update role
-    $("#updateModal .form input[name=role]").change(function () {
+    $(".userPage .updateModal .form input[name=role]").change(function () {
         var role = $(this).val();
         if (role == 1) {
-            $("#updateModal .form input[name=permission]").parents('.form-group').hide();
+            $(".userPage .updateModal .form input[name=permission]").parents('.form-group').hide();
         } else {
-            $("#updateModal .form input[name=permission]").parents('.form-group').show();
+            $(".userPage .updateModal .form input[name=permission]").parents('.form-group').show();
         }
-        $("#updateModal .form input[name='permission']").prop("checked",false);
+        $(".userPage .updateModal .form input[name='permission']").prop("checked",false);
     });
 
 	// update
-	$("#user_list").on('click', '.update',function() {
+	$(".userPage .user_list").on('click', '.update',function() {
 
         var id = $(this).parent('p').attr("id");
         var row = tableData['key'+id];
 
 		// base data
-		$("#updateModal .form input[name='id']").val( row.id );
-		$("#updateModal .form input[name='username']").val( row.username );
-		$("#updateModal .form input[name='password']").val( '' );
-		$("#updateModal .form input[name='role'][value='"+ row.role +"']").click();
+		$(".userPage .updateModal .form input[name='id']").val( row.id );
+		$(".userPage .updateModal .form input[name='username']").val( row.username );
+		$(".userPage .updateModal .form input[name='password']").val( '' );
+		$(".userPage .updateModal .form input[name='role'][value='"+ row.role +"']").click();
         var permissionArr = [];
         if (row.permission) {
             permissionArr = row.permission.split(",");
 		}
-        $("#updateModal .form input[name='permission']").each(function () {
+        $(".userPage .updateModal .form input[name='permission']").each(function () {
             if($.inArray($(this).val(), permissionArr) > -1) {
                 $(this).prop("checked",true);
             } else {
@@ -268,9 +268,9 @@ $(function() {
         });
 
 		// show
-		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.userPage .updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
-	var updateModalValidate = $("#updateModal .form").validate({
+	var updateModalValidate = $(".userPage .updateModal .form").validate({
 		errorElement : 'span',  
         errorClass : 'help-block',
         focusInvalid : true,
@@ -287,21 +287,21 @@ $(function() {
         submitHandler : function(form) {
 
             var permissionArr =[];
-            $("#updateModal .form input[name=permission]:checked").each(function(){
+            $(".userPage .updateModal .form input[name=permission]:checked").each(function(){
                 permissionArr.push($(this).val());
             });
 
             var paramData = {
-                "id": $("#updateModal .form input[name=id]").val(),
-                "username": $("#updateModal .form input[name=username]").val(),
-                "password": $("#updateModal .form input[name=password]").val(),
-                "role": $("#updateModal .form input[name=role]:checked").val(),
+                "id": $(".userPage .updateModal .form input[name=id]").val(),
+                "username": $(".userPage .updateModal .form input[name=username]").val(),
+                "password": $(".userPage .updateModal .form input[name=password]").val(),
+                "role": $(".userPage .updateModal .form input[name=role]:checked").val(),
                 "permission": permissionArr.join(',')
             };
 
             $.post(base_url + "/user/update", paramData, function(data, status) {
                 if (data.code == "200") {
-                    $('#updateModal').modal('hide');
+                    $('.userPage .updateModal').modal('hide');
 
                     layer.msg( I18n.system_update_suc );
                     userListTable.fnDraw();
@@ -316,13 +316,13 @@ $(function() {
             });
 		}
 	});
-	$("#updateModal").on('hide.bs.modal', function () {
-        $("#updateModal .form")[0].reset();
+	$(".userPage .updateModal").on('hide.bs.modal', function () {
+        $(".userPage .updateModal .form")[0].reset();
         updateModalValidate.resetForm();
-        $("#updateModal .form .form-group").removeClass("has-error");
+        $(".userPage .updateModal .form .form-group").removeClass("has-error");
         $(".remote_panel").show();	// remote
 
-        $("#updateModal .form input[name=permission]").parents('.form-group').show();
+        $(".userPage .updateModal .form input[name=permission]").parents('.form-group').show();
 	});
 
 });

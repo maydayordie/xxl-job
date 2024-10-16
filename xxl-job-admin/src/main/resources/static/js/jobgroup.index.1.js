@@ -1,7 +1,7 @@
 $(function() {
 
 	// init date tables
-	var jobGroupTable = $("#jobgroup_list").dataTable({
+	var jobGroupTable = $(".jobGroupPage .jobgroup_list").dataTable({
 		"deferRender": true,
 		"processing" : true,
 		"serverSide": true,
@@ -10,8 +10,8 @@ $(function() {
 			type:"post",
 			data : function ( d ) {
 				var obj = {};
-				obj.appname = $('#appname').val();
-				obj.title = $('#title').val();
+				obj.appname = $('.jobGroupPage .appname').val();
+				obj.title = $('.jobGroupPage .title').val();
 				obj.start = d.start;
 				obj.length = d.length;
 				return obj;
@@ -114,12 +114,12 @@ $(function() {
 	var tableData = {};
 
 	// search btn
-	$('#searchBtn').on('click', function(){
+	$('.jobGroupPage .searchBtn').on('click', function(){
 		jobGroupTable.fnDraw();
 	});
 
 	// job registryinfo
-	$("#jobgroup_list").on('click', '.show_registryList',function() {
+	$(".jobGroupPage .jobgroup_list").on('click', '.show_registryList',function() {
 		var id = $(this).attr("_id");
 		var row = tableData['key'+id];
 
@@ -146,13 +146,13 @@ $(function() {
 		}
 		html += '</tbody></table>';
 
-		$('#showRegistryListModal .data').html(html);
-		$('#showRegistryListModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobGroupPage .showRegistryListModal .data').html(html);
+		$('.jobGroupPage .showRegistryListModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 
 
 	// opt_del
-	$("#jobgroup_list").on('click', '.opt_del',function() {
+	$(".jobGroupPage .jobgroup_list").on('click', '.opt_del',function() {
 		var id = $(this).parents('ul').attr("_id");
 
 		layer.confirm( (I18n.system_ok + I18n.jobgroup_del + '？') , {
@@ -200,9 +200,9 @@ $(function() {
 	}, I18n.jobgroup_field_appname_limit );
 
 	$('.add').on('click', function(){
-		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobGroupPage .addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
-	var addModalValidate = $("#addModal .form").validate({
+	var addModalValidate = $(".jobGroupPage .addModal .form").validate({
 		errorElement : 'span',
 		errorClass : 'help-block',
 		focusInvalid : true,
@@ -239,9 +239,9 @@ $(function() {
 			element.parent('div').append(error);
 		},
 		submitHandler : function(form) {
-			$.post(base_url + "/jobgroup/save",  $("#addModal .form").serialize(), function(data, status) {
+			$.post(base_url + "/jobgroup/save",  $(".jobGroupPage .addModal .form").serialize(), function(data, status) {
 				if (data.code == "200") {
-					$('#addModal').modal('hide');
+					$('.jobGroupPage .addModal').modal('hide');
 					layer.open({
 						title: I18n.system_tips ,
                         btn: [ I18n.system_ok ],
@@ -262,14 +262,14 @@ $(function() {
 			});
 		}
 	});
-	$("#addModal").on('hide.bs.modal', function () {
-		$("#addModal .form")[0].reset();
+	$(".jobGroupPage .addModal").on('hide.bs.modal', function () {
+		$(".jobGroupPage .addModal .form")[0].reset();
 		addModalValidate.resetForm();
-		$("#addModal .form .form-group").removeClass("has-error");
+		$(".jobGroupPage .addModal .form .form-group").removeClass("has-error");
 	});
 
 	// addressType change
-	$("#addModal input[name=addressType], #updateModal input[name=addressType]").click(function(){
+	$(".jobGroupPage .addModal input[name=addressType], .jobGroupPage .updateModal input[name=addressType]").click(function(){
 		var addressType = $(this).val();
 		var $addressList = $(this).parents("form").find("textarea[name=addressList]");
 		if (addressType == 0) {
@@ -284,47 +284,47 @@ $(function() {
 
 ///////////////////////////
 	// 消息id框显示隐藏
-	$("#updateModal .form input[name='groupAlarmFlag']").change(function(){
+	$(".jobGroupPage .updateModal .form input[name='groupAlarmFlag']").change(function(){
 		if ($(this).is(':checked')){
-			$(this).parents("form").find("#groupMessageId").show();
-			$("#updateModal .form input[name='groupMessageId']").prop("disabled", false);
+			$(this).parents("form").find(".jobGroupPage .groupMessageId").show();
+			$(".jobGroupPage .updateModal .form input[name='groupMessageId']").prop("disabled", false);
 		}else {
-			$(this).parents("form").find("#groupMessageId").hide();
-			$("#updateModal .form input[name='groupMessageId']").prop("disabled", true);
+			$(this).parents("form").find(".jobGroupPage .groupMessageId").hide();
+			$(".jobGroupPage .updateModal .form input[name='groupMessageId']").prop("disabled", true);
 		}
 	});
 /////////////////////////
 
 	// opt_edit
-	$("#jobgroup_list").on('click', '.opt_edit',function() {
+	$(".jobGroupPage .jobgroup_list").on('click', '.opt_edit',function() {
 		var id = $(this).parents('ul').attr("_id");
 		var row = tableData['key'+id];
 
-		$("#updateModal .form input[name='id']").val( row.id );
-		$("#updateModal .form input[name='appname']").val( row.appname );
-		$("#updateModal .form input[name='title']").val( row.title );
+		$(".jobGroupPage .updateModal .form input[name='id']").val( row.id );
+		$(".jobGroupPage .updateModal .form input[name='appname']").val( row.appname );
+		$(".jobGroupPage .updateModal .form input[name='title']").val( row.title );
 
 		// 注册方式
-		$("#updateModal .form input[name='addressType']").removeAttr('checked');
-		$("#updateModal .form input[name='addressType'][value='"+ row.addressType +"']").click();
+		$(".jobGroupPage .updateModal .form input[name='addressType']").removeAttr('checked');
+		$(".jobGroupPage .updateModal .form input[name='addressType'][value='"+ row.addressType +"']").click();
 		// 机器地址
-		$("#updateModal .form textarea[name='addressList']").val( row.addressList );
+		$(".jobGroupPage .updateModal .form textarea[name='addressList']").val( row.addressList );
 ///////////////////////////////
 		// 初始化滑动开关是否选中
 		if (row.groupAlarmFlag == '1'){
-			$("#updateModal .form input[name='groupAlarmFlag']").prop("checked", true);
+			$(".jobGroupPage .updateModal .form input[name='groupAlarmFlag']").prop("checked", true);
 		} else{
-			$("#updateModal .form input[name='groupAlarmFlag']").prop("checked", false);
+			$(".jobGroupPage .updateModal .form input[name='groupAlarmFlag']").prop("checked", false);
 		}
 		// 初始化消息id
-		$("#updateModal .form input[name='groupMessageId']").val( row.groupMessageId );
+		$(".jobGroupPage .updateModal .form input[name='groupMessageId']").val( row.groupMessageId );
 		// 初始化消息id框显示隐藏
-		$("#updateModal .form input[name='groupAlarmFlag']").change();
+		$(".jobGroupPage .updateModal .form input[name='groupAlarmFlag']").change();
 /////////////////////////////////////
 
-		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
+		$('.jobGroupPage .updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
-	var updateModalValidate = $("#updateModal .form").validate({
+	var updateModalValidate = $(".jobGroupPage .updateModal .form").validate({
 		errorElement : 'span',
 		errorClass : 'help-block',
 		focusInvalid : true,
@@ -361,9 +361,9 @@ $(function() {
 			element.parent('div').append(error);
 		},
 		submitHandler : function(form) {
-			$.post(base_url + "/jobgroup/update",  $("#updateModal .form").serialize(), function(data, status) {
+			$.post(base_url + "/jobgroup/update",  $(".jobGroupPage .updateModal .form").serialize(), function(data, status) {
 				if (data.code == "200") {
-					$('#updateModal').modal('hide');
+					$('.jobGroupPage .updateModal').modal('hide');
 
 					layer.open({
 						title: I18n.system_tips ,
@@ -385,10 +385,10 @@ $(function() {
 			});
 		}
 	});
-	$("#updateModal").on('hide.bs.modal', function () {
-		$("#updateModal .form")[0].reset();
+	$(".jobGroupPage .updateModal").on('hide.bs.modal', function () {
+		$(".jobGroupPage .updateModal .form")[0].reset();
 		addModalValidate.resetForm();
-		$("#updateModal .form .form-group").removeClass("has-error");
+		$(".jobGroupPage .updateModal .form .form-group").removeClass("has-error");
 	});
 
 	

@@ -39,7 +39,7 @@ public class JobGroupController {
 	public String index(Model model) {
 		return "jobgroup/jobgroup.index";
 	}
-// 执行器列表 总记录数
+    // 执行器列表 总记录数
 	@RequestMapping("/pageList")
 	@ResponseBody
 	@PermissionLimit(adminuser = true)
@@ -59,7 +59,7 @@ public class JobGroupController {
 		maps.put("data", list);  					// 分页列表
 		return maps;
 	}
-// 新增执行器
+    // 新增执行器
 	@RequestMapping("/save")
 	@ResponseBody
 	@PermissionLimit(adminuser = true)

@@ -60,6 +60,24 @@
     <script>
 		var base_url = '${request.contextPath}';
         var I18n = ${I18nUtil.getMultString()};
+		<#--点击菜单切换页面-->
+		function showPage(pageClass) {
+			// 获取所有具有 'page' 类的元素
+			const pages = document.querySelectorAll('.page');
+
+			// 移除所有页面的 'active' 类
+			pages.forEach(page => {
+				page.classList.remove('active');
+			});
+
+			// 通过 class 获取指定的页面并添加 'active' 类
+			const activePage = document.querySelector('.' + pageClass);
+			if (activePage) {
+				activePage.classList.add('active');
+			} else {
+				console.log('未找到具有该类的页面:', pageClass);
+			}
+		}
 	</script>
 
 </#macro>
@@ -134,16 +152,16 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 			<ul class="sidebar-menu">
                 <li class="header">${I18n.system_nav}</li>
-                <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>${I18n.job_dashboard_name}</span></a></li>
-				<li class="nav-click <#if pageName == "jobinfo">active</#if>" ><a href="${request.contextPath}/jobinfo"><i class="fa fa-circle-o text-yellow"></i><span>${I18n.jobinfo_name}</span></a></li>
-				<li class="nav-click <#if pageName == "joblog">active</#if>" ><a href="${request.contextPath}/joblog"><i class="fa fa-circle-o text-green"></i><span>${I18n.joblog_name}</span></a></li>
+                <li class="nav-click <#if pageName == "index">active</#if>"><a href="javascript:void(0);" onclick="showPage('indexPage')"><i class="fa fa-circle-o text-aqua"></i><span>${I18n.job_dashboard_name}</span></a></li>
+				<li class="nav-click <#if pageName == "jobinfo">active</#if>"><a href="javascript:void(0);" onclick="showPage('jobInfoPage')"><i class="fa fa-circle-o text-yellow"></i><span>${I18n.jobinfo_name}</span></a></li>
+				<li class="nav-click <#if pageName == "joblog">active</#if>" ><a href="javascript:void(0);" onclick="showPage('jobLogPage')"><i class="fa fa-circle-o text-green"></i><span>${I18n.joblog_name}</span></a></li>
 				<#if Request["XXL_JOB_LOGIN_IDENTITY"].role == 1>
-                    <li class="nav-click <#if pageName == "jobgroup">active</#if>" ><a href="${request.contextPath}/jobgroup"><i class="fa fa-circle-o text-red"></i><span>${I18n.jobgroup_name}</span></a></li>
-                    <li class="nav-click <#if pageName == "user">active</#if>" ><a href="${request.contextPath}/user"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
+                    <li class="nav-click <#if pageName == "jobgroup">active</#if>" ><a href="javascript:void(0);" onclick="showPage('jobGroupPage')"><i class="fa fa-circle-o text-red"></i><span>${I18n.jobgroup_name}</span></a></li>
+                    <li class="nav-click <#if pageName == "user">active</#if>" ><a href="javascript:void(0);" onclick="showPage('userPage')"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
 				</#if>
-				<li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>${I18n.job_help}</span></a></li>
+				<li class="nav-click <#if pageName == "help">active</#if>" ><a href="javascript:void(0);"><i class="fa fa-circle-o text-gray"></i><span>${I18n.job_help}</span></a></li>
 				<#-- 当页面为alarm时激活 发送请求/xxl-job-admin/alarm 中文名称告警信息 -->
-				<li class="nav-click <#if pageName == "alarm">active</#if>" ><a href="${request.contextPath}/alarm"><i class="fa fa-circle-o text-indigo"></i><span>${I18n.alarm_name}</span></a></li>
+				<li class="nav-click <#if pageName == "alarm">active</#if>" ><a href="javascript:void(0);" onclick="showPage('jobAlarmPage')"><i class="fa fa-circle-o text-indigo"></i><span>${I18n.alarm_name}</span></a></li>
 				<li class="nav-click <#if pageName == "jobcode">active</#if>" ><a href="${request.contextPath}/jobcode?jobId=5"><i class="fa fa-circle-o text-indigo"></i><span>在线编辑器</span></a></li>
 			</ul>
 		</section>
