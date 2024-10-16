@@ -198,6 +198,11 @@ $(function() {
 		logTable.fnDraw();
 	});
 
+	// jobGroup change
+	$('.jobAlarmPage .jobGroup').on('change', function(){
+		logTable.fnDraw();
+	});
+
 });
 
 

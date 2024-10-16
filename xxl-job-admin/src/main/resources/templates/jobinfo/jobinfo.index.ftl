@@ -32,12 +32,14 @@
 	    		<div class="col-xs-3">
 	              	<div class="input-group">
 	                	<span class="input-group-addon">${I18n.jobinfo_field_jobgroup}</span>
-                        <input class="jobGroup form-control" type="text" list="jobGroupList" autocomplete="off" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_jobgroup}">
-                		<datalist class="jobGroupList">
-                			<#list JobGroupList as group>
-                				<option value="${group.title}" data-id="${group.id}" <#if jobGroup==group.id>selected</#if> ></option>
-                			</#list>
-	                  	</datalist>
+                        <select class="jobGroup form-control" paramVal="<#if jobInfo?exists>${jobInfo.jobGroup}</#if>" >
+                            <#if Request["XXL_JOB_LOGIN_IDENTITY"].role == 1>
+                                <option value="0" >${I18n.system_all}</option>  <#-- 仅管理员支持查询全部；普通用户仅支持查询有权限的 jobGroup -->
+                            </#if>
+                            <#list JobGroupList as group>
+                                <option value="${group.id}" >${group.title}</option>
+                            </#list>
+                        </select>
 	              	</div>
 	            </div>
 

@@ -259,6 +259,11 @@ $(function() {
 	$('.jobLogPage .searchBtn').on('click', function(){
 		logTable.fnDraw();
 	});
+
+	// jobGroup change
+	$('.jobLogPage .jobGroup').on('change', function(){
+		logTable.fnDraw();
+	});
 	
 	// logDetail look
 	// 发送执行日志的请求

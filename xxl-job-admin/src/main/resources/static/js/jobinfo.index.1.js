@@ -10,14 +10,15 @@ $(function() {
 			type:"post",
 	        data : function ( d ) {
 	        	var obj = {};
-				obj.jobGroup = 0
-				var jobGroupTitle = $('.jobInfoPage .jobGroup').val();
-				if (jobGroupTitle){
-					var jobGroupId = $('.jobInfoPage .jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id')
-					if (jobGroupId){
-						obj.jobGroup = jobGroupId
-					}
-				}
+				// obj.jobGroup = 0
+				// var jobGroupTitle = $('.jobInfoPage .jobGroup').val();
+				// if (jobGroupTitle){
+				// 	var jobGroupId = $('.jobInfoPage .jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id')
+				// 	if (jobGroupId){
+				// 		obj.jobGroup = jobGroupId
+				// 	}
+				// }
+				obj.jobGroup = $('.jobInfoPage .jobGroup').val();
                 obj.triggerStatus = $('.jobInfoPage .triggerStatus').val();
                 obj.jobDesc = $('.jobInfoPage .jobDesc').val();
 	        	obj.executorHandler = $('.jobInfoPage .executorHandler').val();
@@ -195,13 +196,7 @@ $(function() {
 
 	// jobGroup change
 	$('.jobInfoPage .jobGroup').on('change', function(){
-        var jobGroupTitle = $('.jobInfoPage .jobGroup').val()
-		if (jobGroupTitle){
-			var jobGroup = $('.jobInfoPage .jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id');
-			if (jobGroup){
-				window.location.href = base_url + "/jobinfo?jobGroup=" + jobGroup;
-			}
-		}
+		jobTable.fnDraw();
     });
 
 	// job operate
