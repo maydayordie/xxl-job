@@ -377,7 +377,7 @@ $(function() {
 	});
 
 	// add
-	$(".add").click(function(){
+	$(".jobInfoPage .add").click(function(){
 
 		// init-cronGen
         $(".jobInfoPage .addModal .form input[name='schedule_conf_CRON']").show().siblings().remove();

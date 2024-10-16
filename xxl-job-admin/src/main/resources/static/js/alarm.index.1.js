@@ -206,7 +206,7 @@ $(function() {
 var ComAlertTec = {
 	html:function(){
 		var html =
-			'<div class="modal fade" id="ComAlertTec" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+			'<div class="ComAlertTec modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
 			'	<div class="modal-dialog modal-lg-">' +
 			'		<div class="modal-content-tec">' +
 			'			<div class="modal-body">' +

@@ -199,7 +199,7 @@ $(function() {
 		return this.optional(element) || valid.test(value);
 	}, I18n.jobgroup_field_appname_limit );
 
-	$('.add').on('click', function(){
+	$('.jobGroupPage .add').on('click', function(){
 		$('.jobGroupPage .addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 	var addModalValidate = $(".jobGroupPage .addModal .form").validate({

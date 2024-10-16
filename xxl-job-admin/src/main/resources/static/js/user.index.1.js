@@ -155,7 +155,7 @@ $(function() {
     }, I18n.user_username_valid );
 
 	// add
-	$(".add").click(function(){
+	$(".userPage .add").click(function(){
 		$('.userPage .addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 	var addModalValidate = $(".userPage .addModal .form").validate({
