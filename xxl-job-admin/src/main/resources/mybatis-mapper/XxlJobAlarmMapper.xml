@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--Dao-->
+<mapper namespace="com.xxl.job.admin.dao.XxlJobAlarmDao">
+    <!--Model 反射 默认使用set方法赋值 没有则用反射赋值-->
+    <resultMap id="XxlJobAlarm" type="com.xxl.job.admin.core.model.XxlJobAlarm" >
+        <result column="id" property="id" />
+        <result column="job_group" property="jobGroup" />
+        <result column="job_id" property="jobId" />
+        <result column="job_desc" property="jobDesc" />
+        <result column="trigger_msg" property="triggerMsg" />
+        <result column="alarm_msg" property="alarmMsg" />
+        <result column="alarm_type" property="alarmType" />
+        <result column="message_id" property="messageId" />
+        <result column="alarm_time" property="alarmTime" />
+    </resultMap>
+    <!--Columns-->
+    <sql id="Base_Column_List">
+        t.id,
+		t.job_group,
+		t.job_id,
+		t.job_desc,
+		t.trigger_msg,
+		t.alarm_msg,
+		t.alarm_type,
+		t.message_id,
+		t.alarm_time
+    </sql>
+    <!--/pageList-->
+    <select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobAlarm">
+        SELECT <include refid="Base_Column_List" />
+        FROM xxl_job_alarm AS t
+        <trim prefix="WHERE" prefixOverrides="AND | OR" >
+            <if test="jobId==0 and jobGroup gt 0">
+                AND t.job_group = #{jobGroup}
+            </if>
+            <if test="jobId != null and jobId gt 0">
+                AND t.job_id = #{jobId}
+            </if>
+            <if test="alarmType !=null and alarmType !='' and alarmType gt 0">
+                AND t.alarm_type = #{alarmType}
+            </if>
+            <if test="alarmTimeStart != null">
+                AND t.alarm_time <![CDATA[ >= ]]> #{alarmTimeStart}
+            </if>
+            <if test="alarmTimeEnd != null">
+                AND t.alarm_time <![CDATA[ <= ]]> #{alarmTimeEnd}
+            </if>
+        </trim>
+        ORDER BY t.id DESC
+        LIMIT #{offset}, #{pagesize}
+    </select>
+    <!--/pageList-->
+    <select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
+        SELECT count(1)
+        FROM xxl_job_alarm AS t
+        <trim prefix="WHERE" prefixOverrides="AND | OR" >
+            <if test="jobId==0 and jobGroup gt 0">
+                AND t.job_group = #{jobGroup}
+            </if>
+            <if test="jobId != null and jobId gt 0">
+                AND t.job_id = #{jobId}
+            </if>
+            <if test="alarmType !=null and alarmType !='' and alarmType gt 0">
+                AND t.alarm_type = #{alarmType}
+            </if>
+            <if test="alarmTimeStart != null">
+                AND t.alarm_time <![CDATA[ >= ]]> #{alarmTimeStart}
+            </if>
+            <if test="alarmTimeEnd != null">
+                AND t.alarm_time <![CDATA[ <= ]]> #{alarmTimeEnd}
+            </if>
+        </trim>
+    </select>
+    <!--传入一个XxlJobAlarm，用它给数据表赋值-->
+    <insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobAlarm" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO xxl_job_alarm (
+        `job_group`,
+        `job_id`,
+        `job_desc`,
+        `trigger_msg`,
+        `alarm_msg`,
+        `alarm_type`,
+        `message_id`,
+        `alarm_time`
+        ) VALUES (
+        #{jobGroup},
+        #{jobId},
+        #{jobDesc},
+        #{triggerMsg},
+        #{alarmMsg},
+        #{alarmType},
+        #{messageId},
+        #{alarmTime}
+        );
+    </insert>
+</mapper>
