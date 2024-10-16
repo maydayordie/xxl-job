@@ -108,7 +108,7 @@ public class UserController {
         xxlJobUserDao.save(xxlJobUser);
         return ReturnT.SUCCESS;
     }
-
+// 和updatePwd的区别在于 传入了一个User 管理员可以修改别人的密码
     @RequestMapping("/update")
     @ResponseBody
     @PermissionLimit(adminuser = true)

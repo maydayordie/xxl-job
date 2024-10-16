@@ -17,7 +17,12 @@
 		}
     </style>
 </head>
+
+<!-- left -->
+<@netCommon.commonLeft "jobcode" />
+
 <body class="skin-blue fixed layout-top-nav">
+
 
 	<div class="wrapper">
 

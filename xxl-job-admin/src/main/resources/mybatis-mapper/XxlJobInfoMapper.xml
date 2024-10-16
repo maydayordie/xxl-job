@@ -36,6 +36,8 @@
 		<result column="trigger_status" property="triggerStatus" />
 		<result column="trigger_last_time" property="triggerLastTime" />
 		<result column="trigger_next_time" property="triggerNextTime" />
+		<result column="alarm_flag" property="alarmFlag" />
+		<result column="message_id" property="messageId" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -62,9 +64,11 @@
 		t.child_jobid,
 		t.trigger_status,
 		t.trigger_last_time,
-		t.trigger_next_time
+		t.trigger_next_time,
+		t.alarm_flag,
+		t.message_id
 	</sql>
-
+<!--这里gt可以防止值为0-->
 	<select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_info AS t
@@ -197,7 +201,9 @@
 			child_jobid = #{childJobId},
 			trigger_status = #{triggerStatus},
 			trigger_last_time = #{triggerLastTime},
-			trigger_next_time = #{triggerNextTime}
+			trigger_next_time = #{triggerNextTime},
+			alarm_flag = #{alarmFlag},
+			message_id = #{messageId}
 		WHERE id = #{id}
 	</update>
 

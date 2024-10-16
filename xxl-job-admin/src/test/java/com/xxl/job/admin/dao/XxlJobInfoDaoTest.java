@@ -26,6 +26,7 @@ public class XxlJobInfoDaoTest {
 
 		logger.info("", list);
 		logger.info("", list_count);
+		System.out.println(list);
 
 		List<XxlJobInfo> list2 = xxlJobInfoDao.getJobsByGroup(1);
 	}

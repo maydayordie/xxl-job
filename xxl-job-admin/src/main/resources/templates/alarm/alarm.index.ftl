@@ -50,12 +50,11 @@
 
                 <div class="col-xs-2">
                     <div class="input-group">
-                        <span class="input-group-addon">${I18n.joblog_status}</span>
-                        <select class="form-control" id="logStatus" >
-                            <option value="-1" >${I18n.joblog_status_all}</option>
-                            <option value="1" >${I18n.joblog_status_suc}</option>
-                            <option value="2" >${I18n.joblog_status_fail}</option>
-                            <option value="3" >${I18n.joblog_status_running}</option>
+                        <span class="input-group-addon">${I18n.alarm_type}</span>
+                        <select class="form-control" id="alarmType" >
+                            <option value="0" >${I18n.joblog_status_all}</option>
+                            <option value="1" >${I18n.alarm_type1}</option>
+                            <option value="2" >${I18n.alarm_type2}</option>
                         </select>
                     </div>
                 </div>
@@ -63,7 +62,7 @@
 	            <div class="col-xs-4">
               		<div class="input-group">
                 		<span class="input-group-addon">
-	                  		${I18n.joblog_field_triggerTime}
+	                  		${I18n.alarm_time}
 	                	</span>
 	                	<input type="text" class="form-control" id="filterTime" readonly >
 	              	</div>
@@ -72,32 +71,23 @@
                 <div class="col-xs-1">
                     <button class="btn btn-block btn-info" id="searchBtn">${I18n.system_search}</button>
                 </div>
-
-	            <div class="col-xs-1">
-                    <button class="btn btn-block btn-default" id="clearLog">${I18n.joblog_clean}</button>
-	            </div>
           	</div>
 
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="box">
-			            <#--<div class="box-header hide"><h3 class="box-title">调度日志</h3></div>-->
 			            <div class="box-body">
 			              	<table id="joblog_list" class="table table-bordered table-striped display" width="100%" >
 				                <thead>
 					            	<tr>
                                         <th name="jobId" >${I18n.jobinfo_field_id}</th>
                                         <th name="jobGroup" >jobGroup</th>
-                                        <#--<th name="executorAddress" >执行器地址</th>
-                                        <th name="glueType" >运行模式</th>
-                                        <th name="executorParam" >任务参数</th>-->
-                                        <th name="triggerTime" >${I18n.joblog_field_triggerTime}</th>
-                                        <th name="triggerCode" >${I18n.joblog_field_triggerCode}</th>
+                                        <th name="jobDesc" >${I18n.jobinfo_field_jobdesc}</th>
                                         <th name="triggerMsg" >${I18n.joblog_field_triggerMsg}</th>
-					                  	<th name="handleTime" >${I18n.joblog_field_handleTime}</th>
-					                  	<th name="handleCode" >${I18n.joblog_field_handleCode}</th>
-					                  	<th name="handleMsg" >${I18n.joblog_field_handleMsg}</th>
-					                  	<th name="handleMsg" >${I18n.system_opt}</th>
+                                        <th name="alarmMsg" >${I18n.alarm_field_alarmMsg}</th>
+                                        <th name="alarmType" >${I18n.alarm_field_alarmType}</th>
+                                        <th name="alarmMsgId" >${I18n.alarm_field_alarmMsgId}</th>
+                                        <th name="alarmTime" >${I18n.alarm_field_alarmTime}</th>
 					                </tr>
 				                </thead>
 				                <tbody></tbody>
@@ -175,6 +165,6 @@
 <!-- daterangepicker -->
 <script src="${request.contextPath}/static/adminlte/bower_components/moment/moment.min.js"></script>
 <script src="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="${request.contextPath}/static/js/joblog.index.1.js"></script>
+<script src="${request.contextPath}/static/js/alarm.index.1.js"></script>
 </body>
 </html>

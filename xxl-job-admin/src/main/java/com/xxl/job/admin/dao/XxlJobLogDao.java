@@ -51,6 +51,7 @@ public interface XxlJobLogDao {
 									  @Param("pagesize") int pagesize);
 	public int clearLog(@Param("logIds") List<Long> logIds);
 
+	// 通过这个函数来判断是否告警 当这个函数的返回值为空时不告警
 	public List<Long> findFailJobLogIds(@Param("pagesize") int pagesize);
 
 	public int updateAlarmStatus(@Param("logId") long logId,

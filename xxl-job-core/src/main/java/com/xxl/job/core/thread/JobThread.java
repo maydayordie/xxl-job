@@ -157,6 +157,7 @@ public class JobThread extends Thread{
 							XxlJobHelper.log(e);
 
 							// handle result
+							// 将 执行超时码502 执行信息“任务执行超时” 放到 xxl-job的上下文中
 							XxlJobHelper.handleTimeout("job execute timeout ");
 						} finally {
 							futureThread.interrupt();

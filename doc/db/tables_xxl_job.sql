@@ -7,7 +7,8 @@ use `xxl_job`;
 
 SET NAMES utf8mb4;
 
-CREATE TABLE `xxl_job_info` (
+DROP TABLE xxl_job_info;
+CREATE TABLE IF NOT EXISTS `xxl_job_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_group` int(11) NOT NULL COMMENT '执行器主键ID',
   `job_desc` varchar(255) NOT NULL,
@@ -32,10 +33,12 @@ CREATE TABLE `xxl_job_info` (
   `trigger_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '调度状态：0-停止，1-运行',
   `trigger_last_time` bigint(13) NOT NULL DEFAULT '0' COMMENT '上次调度时间',
   `trigger_next_time` bigint(13) NOT NULL DEFAULT '0' COMMENT '下次调度时间',
+  `alarm_flag` varchar(2) NOT NULL DEFAULT '0' COMMENT '告警开关：0-关，1-开',
+  `message_id` varchar(255) DEFAULT NULL COMMENT '消息ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_log` (
+CREATE TABLE IF NOT EXISTS `xxl_job_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `job_group` int(11) NOT NULL COMMENT '执行器主键ID',
   `job_id` int(11) NOT NULL COMMENT '任务，主键ID',
@@ -56,7 +59,7 @@ CREATE TABLE `xxl_job_log` (
   KEY `I_handle_code` (`handle_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_log_report` (
+CREATE TABLE IF NOT EXISTS `xxl_job_log_report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `trigger_day` datetime DEFAULT NULL COMMENT '调度-时间',
   `running_count` int(11) NOT NULL DEFAULT '0' COMMENT '运行中-日志数量',
@@ -67,7 +70,7 @@ CREATE TABLE `xxl_job_log_report` (
   UNIQUE KEY `i_trigger_day` (`trigger_day`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_logglue` (
+CREATE TABLE IF NOT EXISTS `xxl_job_logglue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL COMMENT '任务，主键ID',
   `glue_type` varchar(50) DEFAULT NULL COMMENT 'GLUE类型',
@@ -78,7 +81,7 @@ CREATE TABLE `xxl_job_logglue` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_registry` (
+CREATE TABLE IF NOT EXISTS `xxl_job_registry` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `registry_group` varchar(50) NOT NULL,
   `registry_key` varchar(255) NOT NULL,
@@ -88,17 +91,20 @@ CREATE TABLE `xxl_job_registry` (
   KEY `i_g_k_v` (`registry_group`,`registry_key`,`registry_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_group` (
+DROP TABLE xxl_job_group;
+CREATE TABLE IF NOT EXISTS `xxl_job_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `app_name` varchar(64) NOT NULL COMMENT '执行器AppName',
   `title` varchar(12) NOT NULL COMMENT '执行器名称',
   `address_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '执行器地址类型：0=自动注册、1=手动录入',
   `address_list` text COMMENT '执行器地址列表，多地址逗号分隔',
   `update_time` datetime DEFAULT NULL,
+  `alarm_flag` varchar(2) NOT NULL DEFAULT '0' COMMENT '告警开关：0-关，1-开',
+  `message_id` varchar(50) DEFAULT NULL COMMENT '消息ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_user` (
+CREATE TABLE IF NOT EXISTS `xxl_job_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL COMMENT '账号',
   `password` varchar(50) NOT NULL COMMENT '密码',
@@ -108,14 +114,38 @@ CREATE TABLE `xxl_job_user` (
   UNIQUE KEY `i_username` (`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `xxl_job_lock` (
+CREATE TABLE IF NOT EXISTS `xxl_job_lock` (
   `lock_name` varchar(50) NOT NULL COMMENT '锁名称',
   PRIMARY KEY (`lock_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `xxl_job_group`(`id`, `app_name`, `title`, `address_type`, `address_list`, `update_time`) VALUES (1, 'xxl-job-executor-sample', '示例执行器', 0, NULL, '2018-11-03 22:21:31' );
-INSERT INTO `xxl_job_info`(`id`, `job_group`, `job_desc`, `add_time`, `update_time`, `author`, `alarm_email`, `schedule_type`, `schedule_conf`, `misfire_strategy`, `executor_route_strategy`, `executor_handler`, `executor_param`, `executor_block_strategy`, `executor_timeout`, `executor_fail_retry_count`, `glue_type`, `glue_source`, `glue_remark`, `glue_updatetime`, `child_jobid`) VALUES (1, 1, '测试任务1', '2018-11-03 22:21:31', '2018-11-03 22:21:31', 'XXL', '', 'CRON', '0 0 0 * * ? *', 'DO_NOTHING', 'FIRST', 'demoJobHandler', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '', 'GLUE代码初始化', '2018-11-03 22:21:31', '');
-INSERT INTO `xxl_job_user`(`id`, `username`, `password`, `role`, `permission`) VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 1, NULL);
-INSERT INTO `xxl_job_lock` ( `lock_name`) VALUES ( 'schedule_lock');
-commit;
+DROP TABLE IF EXISTS xxl_job_alarm;
+CREATE TABLE IF NOT EXISTS `xxl_job_alarm` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `job_group` int(11) NOT NULL COMMENT '执行器主键ID',
+    `job_id` int(11) NOT NULL COMMENT '任务，主键ID',
+    `job_desc` varchar(255) NOT NULL COMMENT '任务-描述',
+    `trigger_msg` text COMMENT '调度-备注',
+    `alarm_msg` text COMMENT '告警-信息',
+    `alarm_type` varchar(2) DEFAULT NULL COMMENT '告警-类型',
+    `message_id` varchar(50) DEFAULT NULL COMMENT '消息ID',
+    `alarm_time` datetime DEFAULT NULL COMMENT '告警-时间',
+PRIMARY KEY (`id`),
+KEY `I_alarm_time` (`alarm_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DELETE FROM `xxl_job_group`;
+INSERT IGNORE INTO `xxl_job_group`(`id`, `app_name`, `title`, `address_type`, `address_list`, `update_time`)
+                            VALUES (1, 'xxl-job-executor-sample', '示例执行器', 0, NULL, '2018-11-03 22:21:31' );
+DELETE FROM `xxl_job_info`;
+INSERT IGNORE INTO `xxl_job_info`(`id`, `job_group`, `job_desc`, `add_time`, `update_time`, `author`, `alarm_email`, `schedule_type`, `schedule_conf`, `misfire_strategy`, `executor_route_strategy`, `executor_handler`, `executor_param`, `executor_block_strategy`, `executor_timeout`, `executor_fail_retry_count`, `glue_type`, `glue_source`, `glue_remark`, `glue_updatetime`, `child_jobid`)
+                                  VALUES (1, 1, '测试任务1', now(), now(), 'XXL', '', 'CRON', '0 0 0 * * ? *', 'DO_NOTHING', 'FIRST', 'demoJobHandler', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '', 'GLUE代码初始化', now(), '');
+INSERT IGNORE INTO `xxl_job_user`(`id`, `username`, `password`, `role`, `permission`)
+                         VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 1, NULL);
+INSERT IGNORE INTO `xxl_job_lock` ( `lock_name`) VALUES ( 'schedule_lock');
+DELETE FROM `xxl_job_alarm`;
+INSERT IGNORE INTO `xxl_job_alarm`(`id`, `job_group`, `job_id`, `job_desc`, `trigger_msg`, `alarm_msg`, `alarm_type`, `message_id`, `alarm_time`)
+                             VALUES (1, 1, 1, '新集中作业系统', '调度备注', '执行器地址为空', 1, 101, now()),
+                                    (2, 1, 1, '市场采购', '调度备注', '网络状态不好', 1, 101, now()),
+                                    (3, 1, 1, '新集中作业系统', '调度备注', '未找到可调用的方法', 2, 101, now());
+commit;

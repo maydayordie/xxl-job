@@ -77,6 +77,8 @@ public class XxlJobScheduler  {
     }
 
     // ---------------------- executor-client ----------------------
+    // 执行器代理对象仓库
+    // 根据地址获取执行器代理对象
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
     public static ExecutorBiz getExecutorBiz(String address) throws Exception {
         // valid
@@ -92,8 +94,10 @@ public class XxlJobScheduler  {
         }
 
         // set-cache
+        // 在代理对象中设置访问令牌
         executorBiz = new ExecutorBizClient(address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
 
+        // 重新放回执行器代理仓库中
         executorBizRepository.put(address, executorBiz);
         return executorBiz;
     }

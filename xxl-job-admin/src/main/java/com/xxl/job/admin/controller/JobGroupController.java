@@ -109,6 +109,7 @@ public class JobGroupController {
 	@PermissionLimit(adminuser = true)
 	public ReturnT<String> update(XxlJobGroup xxlJobGroup){
 		// valid
+		// 检查AppName
 		if (xxlJobGroup.getAppname()==null || xxlJobGroup.getAppname().trim().length()==0) {
 			return new ReturnT<String>(500, (I18nUtil.getString("system_please_input")+"AppName") );
 		}
@@ -120,6 +121,7 @@ public class JobGroupController {
 		}
 		if (xxlJobGroup.getAddressType() == 0) {
 			// 0=自动注册
+			// 用其他执行器的注册节点自动注册
 			List<String> registryList = findRegistryByAppName(xxlJobGroup.getAppname());
 			String addressListStr = null;
 			if (registryList!=null && !registryList.isEmpty()) {
@@ -133,9 +135,11 @@ public class JobGroupController {
 			xxlJobGroup.setAddressList(addressListStr);
 		} else {
 			// 1=手动录入
+			// 地址列表为空
 			if (xxlJobGroup.getAddressList()==null || xxlJobGroup.getAddressList().trim().length()==0) {
 				return new ReturnT<String>(500, I18nUtil.getString("jobgroup_field_addressType_limit") );
 			}
+			// 获取地址列表里的地址
 			String[] addresss = xxlJobGroup.getAddressList().split(",");
 			for (String item: addresss) {
 				if (item==null || item.trim().length()==0) {
@@ -143,14 +147,28 @@ public class JobGroupController {
 				}
 			}
 		}
-
 		// process
 		xxlJobGroup.setUpdateTime(new Date());
+
+		// 检查消息id非空
+		if (xxlJobGroup.getGroupAlarmFlag() != null && xxlJobGroup.getGroupMessageId().isEmpty()) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("alarm_field_messageid")+I18nUtil.getString("system_unvalid")) );
+		}
+		// 告警关闭
+		if (xxlJobGroup.getGroupAlarmFlag() == null){
+			xxlJobGroup.setGroupAlarmFlag("0");
+			xxlJobGroup.setGroupMessageId("");
+		// 告警打开
+		}else{
+			xxlJobGroup.setGroupAlarmFlag("1");
+		}
+		System.out.println(xxlJobGroup);
+
 
 		int ret = xxlJobGroupDao.update(xxlJobGroup);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
-// 根据应用名查询执行器
+	// 获取执行器的注册节点
 	private List<String> findRegistryByAppName(String appnameParam){
 		HashMap<String, List<String>> appAddressMap = new HashMap<String, List<String>>();
 		List<XxlJobRegistry> list = xxlJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());

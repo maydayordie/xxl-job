@@ -125,6 +125,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">${I18n.jobinfo_field_jobgroup}：</label>
                         <div class="col-sm-9">
+<#--                            点击清理按钮时 JS获取执行器下拉框的执行器id和信息 将它赋值给清理表单输入框中-->
                             <input type="text" class="form-control jobGroupText" readonly >
 							<input type="hidden" name="jobGroup" >
 						</div>
@@ -133,6 +134,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">${I18n.jobinfo_job}：</label>
                         <div class="col-sm-9">
+<#--                            点击清理按钮时 JS获取任务下拉框的任务id和任务信息 将它赋值给清理表单的输入框中-->
                             <input type="text" class="form-control jobIdText" readonly >
                             <input type="hidden" name="jobId" >
 						</div>
@@ -141,6 +143,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">${I18n.joblog_clean_type}：</label>
                         <div class="col-sm-9">
+<#--                            时间段下拉框-->
                             <select class="form-control" name="type" >
                                 <option value="1" >${I18n.joblog_clean_type_1}</option>
                                 <option value="2" >${I18n.joblog_clean_type_2}</option>
@@ -158,6 +161,7 @@
                     <hr>
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-6">
+<#--                            清理表单的确认和删除按钮-->
                             <button type="button" class="btn btn-primary ok" >${I18n.system_ok}</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">${I18n.system_cancel}</button>
                         </div>

@@ -193,11 +193,12 @@ $(function() {
 		                			//return temp;
 
 									var logKillDiv = '';
+									// 执行失败时 下拉框添加终止任务超链接
 									if(row.handleCode == 0){
 										logKillDiv = '       <li class="divider"></li>\n' +
 											'       <li><a href="javascript:void(0);" class="logKill" _id="'+ row.id +'" >'+ I18n.joblog_kill_log +'</a></li>\n';
 									}
-
+									// 操作按钮 下拉按钮 下拉框执行日志超链接->logDetail
 									var html = '<div class="btn-group">\n' +
 										'     <button type="button" class="btn btn-primary btn-sm">'+ I18n.system_opt +'</button>\n' +
 										'     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">\n' +
@@ -260,6 +261,8 @@ $(function() {
 	});
 	
 	// logDetail look
+	// 发送执行日志的请求
+	// 数据从Json的data 到row 再到_id 再到var_id 再传到请求里
 	$('#joblog_list').on('click', '.logDetail', function(){
 		var _id = $(this).attr('_id');
 		
@@ -269,10 +272,14 @@ $(function() {
 
 	/**
 	 * log Kill
+	 * 终止任务超链接的JS实现
+	 * 点击超链接时 发送logKill请求
+	 * 根据当前行的任务id，发送终止任务请求
 	 */
 	$('#joblog_list').on('click', '.logKill', function(){
 		var _id = $(this).attr('_id');
 
+		// 确认终止弹窗
         layer.confirm( (I18n.system_ok + I18n.joblog_kill_log + '?'), {
         	icon: 3,
 			title: I18n.system_tips ,
@@ -280,12 +287,14 @@ $(function() {
 		}, function(index){
             layer.close(index);
 
+			// 发送终止请求
             $.ajax({
                 type : 'POST',
                 url : base_url + '/joblog/logKill',
                 data : {"id":_id},
                 dataType : "json",
                 success : function(data){
+					// 终止成功
                     if (data.code == 200) {
                         layer.open({
                             title: I18n.system_tips,
@@ -296,7 +305,8 @@ $(function() {
                                 logTable.fnDraw();
                             }
                         });
-                    } else {
+                    // 终止失败
+					} else {
                         layer.open({
                             title: I18n.system_tips,
                             btn: [ I18n.system_ok ],
@@ -312,6 +322,7 @@ $(function() {
 
 	/**
 	 * clear Log
+	 * 指定ftl的清理按钮 点击时弹出拟模态框
 	 */
 	$('#clearLog').on('click', function(){
 
@@ -321,19 +332,24 @@ $(function() {
 		var jobGroupText = $("#jobGroup").find("option:selected").text();
 		var jobIdText = $("#jobId").find("option:selected").text();
 
+		// 将日志的var传到模态框的输入栏中
 		$('#clearLogModal input[name=jobGroup]').val(jobGroup);
 		$('#clearLogModal input[name=jobId]').val(jobId);
 
 		$('#clearLogModal .jobGroupText').val(jobGroupText);
 		$('#clearLogModal .jobIdText').val(jobIdText);
 
+		// 手动打开模态框
 		$('#clearLogModal').modal('show');
 
 	});
+	// 按下模态框的确认按钮后 发送清理日志的请求
 	$("#clearLogModal .ok").on('click', function(){
 		$.post(base_url + "/joblog/clearLog",  $("#clearLogModal .form").serialize(), function(data, status) {
+			// 返回的TReturn.code为成功时 手动隐藏模态框
 			if (data.code == "200") {
 				$('#clearLogModal').modal('hide');
+				// 提示："日志清理成功"
 				layer.open({
 					title: I18n.system_tips ,
                     btn: [ I18n.system_ok ],
@@ -344,6 +360,8 @@ $(function() {
 					}
 				});
 			} else {
+				// 返回的TReturn.code为失败
+				// 提示：“日志清理失败”
 				layer.open({
 					title: I18n.system_tips ,
                     btn: [ I18n.system_ok ],
@@ -353,6 +371,8 @@ $(function() {
 			}
 		});
 	});
+	// 模态框完全消失后触发
+	// 重置表单的数据
 	$("#clearLogModal").on('hide.bs.modal', function () {
 		$("#clearLogModal .form")[0].reset();
 	});

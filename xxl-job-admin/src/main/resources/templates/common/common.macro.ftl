@@ -142,8 +142,9 @@
                     <li class="nav-click <#if pageName == "user">active</#if>" ><a href="${request.contextPath}/user"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
 				</#if>
 				<li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>${I18n.job_help}</span></a></li>
-<#--				当页面为alarm时激活 发送请求/xxl-job-admin/alarm 中文名称告警信息 -->
+				<#-- 当页面为alarm时激活 发送请求/xxl-job-admin/alarm 中文名称告警信息 -->
 				<li class="nav-click <#if pageName == "alarm">active</#if>" ><a href="${request.contextPath}/alarm"><i class="fa fa-circle-o text-indigo"></i><span>${I18n.alarm_name}</span></a></li>
+				<li class="nav-click <#if pageName == "jobcode">active</#if>" ><a href="${request.contextPath}/jobcode?jobId=5"><i class="fa fa-circle-o text-indigo"></i><span>在线编辑器</span></a></li>
 			</ul>
 		</section>
 		<!-- /.sidebar -->

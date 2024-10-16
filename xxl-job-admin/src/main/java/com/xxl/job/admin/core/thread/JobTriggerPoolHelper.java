@@ -144,6 +144,7 @@ public class JobTriggerPoolHelper {
      *          not null: cover job param
      */
     public static void trigger(int jobId, TriggerTypeEnum triggerType, int failRetryCount, String executorShardingParam, String executorParam, String addressList) {
+//        System.out.println("trigger poolHelper");
         helper.addTrigger(jobId, triggerType, failRetryCount, executorShardingParam, executorParam, addressList);
     }
 

@@ -1,6 +1,8 @@
 $(function() {
 
+    // js不接收网络参数${...} 所以需要先转化为var变量
     // trigger fail, end
+    // 调度失败且未执行:任务发起调度失败，无法查看执行日志
     if ( !(triggerCode == 200 || handleCode != 0) ) {
         $('#logConsoleRunning').hide();
         $('#logConsole').append('<span style="color: red;">'+ I18n.joblog_rolling_log_triggerfail +'</span>');
@@ -36,10 +38,12 @@ $(function() {
                         console.log('pullLog fail');
                         return;
                     }
+                    // 本次请求日志位于日志哪一行
                     if (fromLineNum != data.content.fromLineNum) {
                         console.log('pullLog fromLineNum not match');
                         return;
                     }
+                    // 已换行
                     if (fromLineNum > data.content.toLineNum ) {
                         console.log('pullLog already line-end');
 

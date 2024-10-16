@@ -86,7 +86,7 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
     @Resource
     private JobAlarmer jobAlarmer;
 
-
+    // 将properties配置文件中的配置 用函数的形式配置
     public String getI18n() {
         if (!Arrays.asList("zh_CN", "zh_TC", "en").contains(i18n)) {
             return "zh_CN";
@@ -123,6 +123,7 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
         return logretentiondays;
     }
 
+    // 六个守护线程Helper 通过获取Dao管理它的操作
     public XxlJobLogDao getXxlJobLogDao() {
         return xxlJobLogDao;
     }

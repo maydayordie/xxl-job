@@ -176,6 +176,7 @@ public class XxlJobHelper {
      *
      * @return
      */
+    // 执行成功
     public static boolean handleSuccess(){
         return handleResult(XxlJobContext.HANDLE_CODE_SUCCESS, null);
     }
@@ -186,6 +187,7 @@ public class XxlJobHelper {
      * @param handleMsg
      * @return
      */
+    // 执行成功
     public static boolean handleSuccess(String handleMsg) {
         return handleResult(XxlJobContext.HANDLE_CODE_SUCCESS, handleMsg);
     }
@@ -195,6 +197,7 @@ public class XxlJobHelper {
      *
      * @return
      */
+    // 执行失败
     public static boolean handleFail(){
         return handleResult(XxlJobContext.HANDLE_CODE_FAIL, null);
     }
@@ -205,6 +208,7 @@ public class XxlJobHelper {
      * @param handleMsg
      * @return
      */
+    // 执行失败
     public static boolean handleFail(String handleMsg) {
         return handleResult(XxlJobContext.HANDLE_CODE_FAIL, handleMsg);
     }
@@ -214,6 +218,7 @@ public class XxlJobHelper {
      *
      * @return
      */
+    // 执行超时
     public static boolean handleTimeout(){
         return handleResult(XxlJobContext.HANDLE_CODE_TIMEOUT, null);
     }
@@ -224,6 +229,7 @@ public class XxlJobHelper {
      * @param handleMsg
      * @return
      */
+    // 执行超时
     public static boolean handleTimeout(String handleMsg){
         return handleResult(XxlJobContext.HANDLE_CODE_TIMEOUT, handleMsg);
     }
@@ -238,7 +244,9 @@ public class XxlJobHelper {
      * @param handleMsg
      * @return
      */
+    // 执行结果
     public static boolean handleResult(int handleCode, String handleMsg) {
+        // 将执行结果写到xxl-job上下文中
         XxlJobContext xxlJobContext = XxlJobContext.getXxlJobContext();
         if (xxlJobContext == null) {
             return false;

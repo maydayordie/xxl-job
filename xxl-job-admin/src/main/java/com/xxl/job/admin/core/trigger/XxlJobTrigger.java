@@ -88,7 +88,6 @@ public class XxlJobTrigger {
             }
             processTrigger(group, jobInfo, finalFailRetryCount, triggerType, shardingParam[0], shardingParam[1]);
         }
-
     }
 
     private static boolean isNumeric(String str){
@@ -139,21 +138,26 @@ public class XxlJobTrigger {
         triggerParam.setBroadcastTotal(total);
 
         // 3、init address
+        // 初始化注册节点
         String address = null;
         ReturnT<String> routeAddressResult = null;
+        // 查询执行器的注册节点列表
         if (group.getRegistryList()!=null && !group.getRegistryList().isEmpty()) {
+            // 如果路由策略为分片广播
             if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == executorRouteStrategyEnum) {
                 if (index < group.getRegistryList().size()) {
                     address = group.getRegistryList().get(index);
                 } else {
                     address = group.getRegistryList().get(0);
                 }
+            // 路由策略不为分片广播 是否有路由器
             } else {
                 routeAddressResult = executorRouteStrategyEnum.getRouter().route(triggerParam, group.getRegistryList());
                 if (routeAddressResult.getCode() == ReturnT.SUCCESS_CODE) {
                     address = routeAddressResult.getContent();
                 }
             }
+        // 注册节点为空
         } else {
             routeAddressResult = new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
         }
@@ -191,7 +195,9 @@ public class XxlJobTrigger {
         jobLog.setExecutorShardingParam(shardingParam);
         jobLog.setExecutorFailRetryCount(finalFailRetryCount);
         //jobLog.setTriggerTime();
+        // 调度码 当调度失败时为 500
         jobLog.setTriggerCode(triggerResult.getCode());
+        // 包含了路由结果 调度失败：执行器地址为空
         jobLog.setTriggerMsg(triggerMsgSb.toString());
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateTriggerInfo(jobLog);
 

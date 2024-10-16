@@ -139,6 +139,7 @@ public class JobInfoController {
 	@RequestMapping("/trigger")
 	@ResponseBody
 	public ReturnT<String> triggerJob(HttpServletRequest request, int id, String executorParam, String addressList) {
+//		System.out.println("trigger controller");
 		// login user
 		XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 		// trigger

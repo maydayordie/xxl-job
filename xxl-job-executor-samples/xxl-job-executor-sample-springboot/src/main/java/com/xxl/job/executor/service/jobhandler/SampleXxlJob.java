@@ -36,13 +36,14 @@ public class SampleXxlJob {
      */
     @XxlJob("demoJobHandler")
     public void demoJobHandler() throws Exception {
+        // 每隔两秒打印一个节拍 一共打印10秒
         XxlJobHelper.log("XXL-JOB, Hello World.");
-
         for (int i = 0; i < 5; i++) {
             XxlJobHelper.log("beat at:" + i);
             TimeUnit.SECONDS.sleep(2);
         }
-        // default success
+        // 默认是执行成功 可以handleFail设为执行失败
+//        XxlJobHelper.handleFail("command exit is failed");
     }
 
 
@@ -52,7 +53,7 @@ public class SampleXxlJob {
     @XxlJob("shardingJobHandler")
     public void shardingJobHandler() throws Exception {
 
-        // 分片参数
+        // 分片参数 序号和总数
         int shardIndex = XxlJobHelper.getShardIndex();
         int shardTotal = XxlJobHelper.getShardTotal();
 

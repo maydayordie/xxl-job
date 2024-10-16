@@ -8,11 +8,13 @@
     <title>${I18n.admin_name}</title>
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxljob_adminlte_settings"]?exists && "off" == cookieMap["xxljob_adminlte_settings"].value >sidebar-collapse</#if>">
+
 <div class="wrapper">
 	<!-- header -->
 	<@netCommon.commonHeader />
 	<!-- left -->
 	<@netCommon.commonLeft "jobinfo" />
+
 	
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
@@ -20,7 +22,7 @@
 		<section class="content-header">
 			<h1>${I18n.jobinfo_name}</h1>
 		</section>
-		
+
 		<!-- Main content -->
 	    <section class="content">
 	    
@@ -28,13 +30,15 @@
 	    		<div class="col-xs-3">
 	              	<div class="input-group">
 	                	<span class="input-group-addon">${I18n.jobinfo_field_jobgroup}</span>
-                		<select class="form-control" id="jobGroup" >
+                        <input class="form-control" type="text" id="jobGroup" list="jobGroupList" autocomplete="off" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_jobgroup}">
+                		<datalist id="jobGroupList">
                 			<#list JobGroupList as group>
-                				<option value="${group.id}" <#if jobGroup==group.id>selected</#if> >${group.title}</option>
+                				<option value="${group.title}" data-id="${group.id}" <#if jobGroup==group.id>selected</#if> ></option>
                 			</#list>
-	                  	</select>
+	                  	</datalist>
 	              	</div>
 	            </div>
+
                 <div class="col-xs-1">
                     <div class="input-group">
                         <select class="form-control" id="triggerStatus" >
@@ -51,12 +55,12 @@
                 </div>
                 <div class="col-xs-2">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="executorHandler" placeholder="${I18n.system_please_input}JobHandler" >
+                        <input type="text" class="form-control" id="executorHandler" placeholder="JobHandler" >
                     </div>
                 </div>
                 <div class="col-xs-2">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="author" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_author}" >
+                        <input type="text" class="form-control" id="author" placeholder="${I18n.jobinfo_field_author}" >
                     </div>
                 </div>
 	            <div class="col-xs-1">
@@ -104,6 +108,91 @@
 	<!-- footer -->
 	<@netCommon.commonFooter />
 </div>
+
+<!-- 测试模态框 -->
+<#--<div class="modal fade" id="testModal" tabindex="-1" role="dialog"  aria-hidden="true">-->
+<#--    <div class="modal-dialog modal-lg">-->
+<#--        <div class="modal-content">-->
+<#--            <div class="modal-header">-->
+<#--                <h4 class="modal-title" >测试模态框</h4>-->
+<#--            </div>-->
+<#--            <div class="modal-body">-->
+<#--                <div class="row">-->
+<#--                    <div class="col-xs-3">-->
+<#--                        <div class="input-group">-->
+<#--                            <span class="input-group-addon">${I18n.jobinfo_field_jobgroup}</span>-->
+<#--                            <input class="form-control" type="text" id="jobGroup" list="jobGroupList" autocomplete="off" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_jobgroup}">-->
+<#--                            <datalist id="jobGroupList">-->
+<#--                                <#list JobGroupList as group>-->
+<#--                                    <option value="${group.title}" data-id="${group.id}" <#if jobGroup==group.id>selected</#if> ></option>-->
+<#--                                </#list>-->
+<#--                            </datalist>-->
+<#--                        </div>-->
+<#--                    </div>-->
+
+<#--                    <div class="col-xs-1">-->
+<#--                        <div class="input-group">-->
+<#--                            <select class="form-control" id="triggerStatus" >-->
+<#--                                <option value="-1" >${I18n.system_all}</option>-->
+<#--                                <option value="0" >${I18n.jobinfo_opt_stop}</option>-->
+<#--                                <option value="1" >${I18n.jobinfo_opt_start}</option>-->
+<#--                            </select>-->
+<#--                        </div>-->
+<#--                    </div>-->
+<#--                    <div class="col-xs-2">-->
+<#--                        <div class="input-group">-->
+<#--                            <input type="text" class="form-control" id="jobDesc" placeholder="${I18n.system_please_input}${I18n.jobinfo_field_jobdesc}" >-->
+<#--                        </div>-->
+<#--                    </div>-->
+<#--                    <div class="col-xs-2">-->
+<#--                        <div class="input-group">-->
+<#--                            <input type="text" class="form-control" id="executorHandler" placeholder="JobHandler" >-->
+<#--                        </div>-->
+<#--                    </div>-->
+<#--                    <div class="col-xs-2">-->
+<#--                        <div class="input-group">-->
+<#--                            <input type="text" class="form-control" id="author" placeholder="${I18n.jobinfo_field_author}" >-->
+<#--                        </div>-->
+<#--                    </div>-->
+<#--                    <div class="col-xs-2">-->
+<#--                        <button class="btn btn-block btn-info" id="searchBtn">${I18n.system_search}</button>-->
+<#--                    </div>-->
+<#--                </div>-->
+<#--                <div class="row">-->
+<#--                    <div class="col-xs-12">-->
+<#--                        <div class="box">-->
+<#--                            &lt;#&ndash;<div class="box-header hide">-->
+<#--                                <h3 class="box-title">调度列表</h3>-->
+<#--                            </div>&ndash;&gt;-->
+<#--                            <div class="box-body" >-->
+<#--                                <table id="job_list_test" class="table table-bordered table-striped" width="100%" >-->
+<#--                                    <thead>-->
+<#--                                    <tr>-->
+<#--                                        <th name="id" >${I18n.jobinfo_field_id}</th>-->
+<#--                                        <th name="jobGroup" >${I18n.jobinfo_field_jobgroup}</th>-->
+<#--                                        <th name="jobDesc" >${I18n.jobinfo_field_jobdesc}</th>-->
+<#--                                        <th name="scheduleType" >${I18n.schedule_type}</th>-->
+<#--                                        <th name="glueType" >${I18n.jobinfo_field_gluetype}</th>-->
+<#--                                        <th name="executorParam" >${I18n.jobinfo_field_executorparam}</th>-->
+<#--                                        <th name="addTime" >addTime</th>-->
+<#--                                        <th name="updateTime" >updateTime</th>-->
+<#--                                        <th name="author" >${I18n.jobinfo_field_author}</th>-->
+<#--                                        <th name="alarmEmail" >${I18n.jobinfo_field_alarmemail}</th>-->
+<#--                                        <th name="triggerStatus" >${I18n.system_status}</th>-->
+<#--                                        <th>${I18n.system_opt}</th>-->
+<#--                                    </tr>-->
+<#--                                    </thead>-->
+<#--                                    <tbody></tbody>-->
+<#--                                    <tfoot></tfoot>-->
+<#--                                </table>-->
+<#--                            </div>-->
+<#--                        </div>-->
+<#--                    </div>-->
+<#--                </div>-->
+<#--            </div>-->
+<#--        </div>-->
+<#--    </div>-->
+<#--</div>-->
 
 <!-- job新增.模态框 -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -407,6 +496,27 @@ exit 0
                         <div class="schedule_conf schedule_conf_FIX_DELAY" style="display: none" >
                             <label for="lastname" class="col-sm-2 control-label">${I18n.schedule_type_fix_delay}<font color="red">*</font></label>
                             <div class="col-sm-4"><input type="text" class="form-control" name="schedule_conf_FIX_DELAY" placeholder="${I18n.system_please_input} （ Second ）" maxlength="10" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" ></div>
+                        </div>
+
+                    </div>
+
+                    <#--switch.css-->
+                    <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/switch/alarmflag_switch.css">
+                    <div class="form-group">
+                        <#--alarmFlag-->
+                        <label for="lastname" class="col-sm-2 control-label">${I18n.alarm_field_alarmflag}</label>
+                        <div class="col-sm-4">
+                            <div class="switch-box">
+                                <input id="alarmFlag" type="checkbox" class="switch" name="alarmFlag"/>
+                                <label for="alarmFlag"></label>
+                            </div>
+                        </div>
+                        <#--messageId-->
+                        <div id="messageId" >
+                            <label for="lastname" class="col-sm-2 control-label">${I18n.alarm_field_messageid}<font color="red">*</font></label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" name="messageId" placeholder="${I18n.alarm_field_messageid_placeholder}" maxlength="50" >
+                            </div>
                         </div>
                     </div>
 

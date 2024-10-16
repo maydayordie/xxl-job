@@ -164,6 +164,27 @@
                                 <textarea class="textarea" name="addressList" maxlength="20000" placeholder="${I18n.jobgroup_field_registryList_placeholder}" readonly="readonly" style="background-color:#eee; width: 100%; height: 100px; font-size: 14px; line-height: 15px; border: 1px solid #dddddd; padding: 5px;"></textarea>
                             </div>
                         </div>
+
+                        <#--switch.css-->
+                        <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/switch/alarmflag_switch.css">
+                        <div class="form-group">
+                            <#--groupAlarmFlag-->
+                            <label for="lastname" class="col-sm-2 control-label">${I18n.alarm_field_alarmflag}</label>
+                            <div class="col-sm-4">
+                                <div class="switch-box">
+                                    <input id="groupAlarmFlag" type="checkbox" class="switch" name="groupAlarmFlag"/>
+                                    <label for="groupAlarmFlag"></label>
+                                </div>
+                            </div>
+                            <#--groupMessageId-->
+                            <div id="groupMessageId" >
+                                <label for="lastname" class="col-sm-2 control-label">${I18n.alarm_field_messageid}<font color="red">*</font></label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="groupMessageId" placeholder="${I18n.alarm_field_messageid_placeholder}" maxlength="50" >
+                                </div>
+                            </div>
+                        </div>
+
                         <hr>
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-6">

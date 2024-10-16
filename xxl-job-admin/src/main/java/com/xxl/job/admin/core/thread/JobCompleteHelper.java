@@ -35,18 +35,23 @@ public class JobCompleteHelper {
 	public void start(){
 
 		// for callback
+		// 日志写回线程 核心线程=2 线程池大小=20 存活时间=30L
 		callbackThreadPool = new ThreadPoolExecutor(
 				2,
 				20,
 				30L,
+				// 时间单位=秒
 				TimeUnit.SECONDS,
+				// 阻塞队列=3000
 				new LinkedBlockingQueue<Runnable>(3000),
+				// 线程工厂
 				new ThreadFactory() {
 					@Override
 					public Thread newThread(Runnable r) {
 						return new Thread(r, "xxl-job, admin JobLosedMonitorHelper-callbackThreadPool-" + r.hashCode());
 					}
 				},
+				// 拒绝执行处理器
 				new RejectedExecutionHandler() {
 					@Override
 					public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
@@ -139,8 +144,10 @@ public class JobCompleteHelper {
 
 		callbackThreadPool.execute(new Runnable() {
 			@Override
+			// 将各个任务的执行参数写回日志
 			public void run() {
 				for (HandleCallbackParam handleCallbackParam: callbackParamList) {
+					// 执行信息写回日志
 					ReturnT<String> callbackResult = callback(handleCallbackParam);
 					logger.debug(">>>>>>>>> JobApiController.callback {}, handleCallbackParam={}, callbackResult={}",
 							(callbackResult.getCode()== ReturnT.SUCCESS_CODE?"success":"fail"), handleCallbackParam, callbackResult);
@@ -151,17 +158,22 @@ public class JobCompleteHelper {
 		return ReturnT.SUCCESS;
 	}
 
+	// 执行信息写回日志
 	private ReturnT<String> callback(HandleCallbackParam handleCallbackParam) {
 		// valid log item
+		// 从配置中获取当前任务的日志
 		XxlJobLog log = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().load(handleCallbackParam.getLogId());
+		// 检查日志有没有被清除
 		if (log == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, "log item not found.");
 		}
+		// 如果执行码已经被写了 报日志被重复写入错误
 		if (log.getHandleCode() > 0) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, "log repeate callback.");     // avoid repeat callback, trigger child job etc
 		}
 
 		// handle msg
+		// 将日志信息和callback参数添加到处理信息中
 		StringBuffer handleMsg = new StringBuffer();
 		if (log.getHandleMsg()!=null) {
 			handleMsg.append(log.getHandleMsg()).append("<br>");
@@ -171,6 +183,7 @@ public class JobCompleteHelper {
 		}
 
 		// success, save log
+		// 执行成功 执行时间 执行码 执行信息 保存到日志中
 		log.setHandleTime(new Date());
 		log.setHandleCode(handleCallbackParam.getHandleCode());
 		log.setHandleMsg(handleMsg.toString());

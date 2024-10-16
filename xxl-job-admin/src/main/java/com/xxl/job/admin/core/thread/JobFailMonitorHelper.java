@@ -37,9 +37,10 @@ public class JobFailMonitorHelper {
 				// monitor
 				while (!toStop) {
 					try {
-
 						List<Long> failLogIds = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findFailJobLogIds(1000);
+//						System.out.println("monitorThread failLogIds:" + failLogIds);
 						if (failLogIds!=null && !failLogIds.isEmpty()) {
+//							System.out.println("failLogIds!=null");
 							for (long failLogId: failLogIds) {
 
 								// lock log
@@ -78,6 +79,7 @@ public class JobFailMonitorHelper {
 					}
 
                     try {
+						// 每隔10秒运行一次监控线程
                         TimeUnit.SECONDS.sleep(10);
                     } catch (Exception e) {
                         if (!toStop) {

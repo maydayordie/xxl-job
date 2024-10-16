@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--Dao-->
 <mapper namespace="com.xxl.job.admin.dao.XxlJobUserDao">
-
+<!--Model-->
 	<resultMap id="XxlJobUser" type="com.xxl.job.admin.core.model.XxlJobUser" >
 		<result column="id" property="id" />
 		<result column="username" property="username" />
@@ -10,7 +11,7 @@
 	    <result column="role" property="role" />
 	    <result column="permission" property="permission" />
 	</resultMap>
-
+<!--Columns-->
 	<sql id="Base_Column_List">
 		t.id,
 		t.username,
@@ -18,7 +19,7 @@
 		t.role,
 		t.permission
 	</sql>
-
+<!--/pageList-->
 	<select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobUser">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_user AS t
@@ -33,7 +34,7 @@
 		ORDER BY username ASC
 		LIMIT #{offset}, #{pagesize}
 	</select>
-<!--页数统计-->
+<!--/pageList-->
 	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT count(1)
 		FROM xxl_job_user AS t
@@ -46,13 +47,13 @@
 			</if>
 		</trim>
 	</select>
-<!--查找用户-->
+<!--/add-->
 	<select id="loadByUserName" parameterType="java.util.HashMap" resultMap="XxlJobUser">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_user AS t
 		WHERE t.username = #{username}
 	</select>
-<!--新增用户-->
+<!--/add /updatePwd-->
 	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobUser" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO xxl_job_user (
 			username,
@@ -66,7 +67,7 @@
 			#{permission}
 		);
 	</insert>
-<!--修改密码-->
+<!--/updatePwd /update-->
 	<update id="update" parameterType="com.xxl.job.admin.core.model.XxlJobUser" >
 		UPDATE xxl_job_user
 		SET
@@ -77,7 +78,7 @@
 			permission = #{permission}
 		WHERE id = #{id}
 	</update>
-<!--删除用户-->
+<!--/remove-->
 	<delete id="delete" parameterType="java.util.HashMap">
 		DELETE
 		FROM xxl_job_user

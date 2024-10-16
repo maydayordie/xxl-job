@@ -17,6 +17,10 @@ public class XxlJobGroup {
     private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
     private Date updateTime;
 
+    // alarmFlag and messageId
+    private String groupAlarmFlag;
+    private String groupMessageId;
+
     // registry list
     private List<String> registryList;  // 执行器地址列表(系统注册)
     public List<String> getRegistryList() {
@@ -74,4 +78,38 @@ public class XxlJobGroup {
         this.addressList = addressList;
     }
 
+    public void setRegistryList(List<String> registryList) {
+        this.registryList = registryList;
+    }
+
+    public String getGroupAlarmFlag() {
+        return groupAlarmFlag;
+    }
+
+    public void setGroupAlarmFlag(String groupAlarmFlag) {
+        this.groupAlarmFlag = groupAlarmFlag;
+    }
+
+    public String getGroupMessageId() {
+        return groupMessageId;
+    }
+
+    public void setGroupMessageId(String groupMessageId) {
+        this.groupMessageId = groupMessageId;
+    }
+
+    @Override
+    public String toString() {
+        return "XxlJobGroup{" +
+                "id=" + id +
+                ", appname='" + appname + '\'' +
+                ", title='" + title + '\'' +
+                ", addressType=" + addressType +
+                ", addressList='" + addressList + '\'' +
+                ", updateTime=" + updateTime +
+                ", groupAlarmFlag='" + groupAlarmFlag + '\'' +
+                ", groupMessageId='" + groupMessageId + '\'' +
+                ", registryList=" + registryList +
+                '}';
+    }
 }

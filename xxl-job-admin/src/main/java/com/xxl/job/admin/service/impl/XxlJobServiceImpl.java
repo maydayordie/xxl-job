@@ -76,6 +76,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		}
 
 		// valid trigger
+		// 检查调度信息是否合法 匹配中文形式的调度类型枚举 Cron时不能为空不能非法 固定速率时不能为空
 		ScheduleTypeEnum scheduleTypeEnum = ScheduleTypeEnum.match(jobInfo.getScheduleType(), null);
 		if (scheduleTypeEnum == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
@@ -180,6 +181,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		}
 
 		// valid trigger
+		// 调度校验 Cron 固定速率不能为空
 		ScheduleTypeEnum scheduleTypeEnum = ScheduleTypeEnum.match(jobInfo.getScheduleType(), null);
 		if (scheduleTypeEnum == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
@@ -203,6 +205,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		}
 
 		// valid advanced
+		// 校验 路由策略 过时策略 阻塞策略
 		if (ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null) == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorRouteStrategy")+I18nUtil.getString("system_unvalid")) );
 		}
@@ -239,11 +242,13 @@ public class XxlJobServiceImpl implements XxlJobService {
 			jobInfo.setChildJobId(temp);
 		}
 
-		// group valid
+		// alarm valid
 		XxlJobGroup jobGroup = xxlJobGroupDao.load(jobInfo.getJobGroup());
 		if (jobGroup == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobgroup")+I18nUtil.getString("system_unvalid")) );
 		}
+
+
 
 		// stage job info
 		XxlJobInfo exists_jobInfo = xxlJobInfoDao.loadById(jobInfo.getId());
@@ -282,11 +287,24 @@ public class XxlJobServiceImpl implements XxlJobService {
 		exists_jobInfo.setExecutorFailRetryCount(jobInfo.getExecutorFailRetryCount());
 		exists_jobInfo.setChildJobId(jobInfo.getChildJobId());
 		exists_jobInfo.setTriggerNextTime(nextTriggerTime);
-
 		exists_jobInfo.setUpdateTime(new Date());
+
+		// 检查消息id非空
+		if (jobInfo.getAlarmFlag() != null && jobInfo.getMessageId().isEmpty()) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("alarm_field_messageid")+I18nUtil.getString("system_unvalid")) );
+		}
+		// 告警关闭
+		if (jobInfo.getAlarmFlag() == null){
+			exists_jobInfo.setAlarmFlag("0");
+			exists_jobInfo.setMessageId("");
+		// 告警打开
+		}else{
+			exists_jobInfo.setAlarmFlag("1");
+			exists_jobInfo.setMessageId(jobInfo.getMessageId());
+		}
+		System.out.println(exists_jobInfo);
+
         xxlJobInfoDao.update(exists_jobInfo);
-
-
 		return ReturnT.SUCCESS;
 	}
 
@@ -352,6 +370,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
 	@Override
 	public ReturnT<String> trigger(XxlJobUser loginUser, int jobId, String executorParam, String addressList) {
+//		System.out.println("trigger service");
 		// permission
 		if (loginUser == null) {
 			return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("system_permission_limit"));

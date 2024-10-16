@@ -42,6 +42,10 @@ public class XxlJobInfo {
 	private long triggerLastTime;	// 上次调度时间
 	private long triggerNextTime;	// 下次调度时间
 
+	// alarmFlag and messageId
+	private String alarmFlag;
+	private String messageId;
+
 
 	public int getId() {
 		return id;
@@ -233,5 +237,51 @@ public class XxlJobInfo {
 
 	public void setTriggerNextTime(long triggerNextTime) {
 		this.triggerNextTime = triggerNextTime;
+	}
+
+	// alarmFlag and messageId
+	public String getAlarmFlag() {
+		return alarmFlag;
+	}
+	public void setAlarmFlag(String alarmFlag) {
+		this.alarmFlag = alarmFlag;
+	}
+	public String getMessageId() {
+		return messageId;
+	}
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
+	@Override
+	public String toString() {
+		return "XxlJobInfo{" +
+				"id=" + id +
+				", jobGroup=" + jobGroup +
+				", jobDesc='" + jobDesc + '\'' +
+				", addTime=" + addTime +
+				", updateTime=" + updateTime +
+				", author='" + author + '\'' +
+				", alarmEmail='" + alarmEmail + '\'' +
+				", scheduleType='" + scheduleType + '\'' +
+				", scheduleConf='" + scheduleConf + '\'' +
+				", misfireStrategy='" + misfireStrategy + '\'' +
+				", executorRouteStrategy='" + executorRouteStrategy + '\'' +
+				", executorHandler='" + executorHandler + '\'' +
+				", executorParam='" + executorParam + '\'' +
+				", executorBlockStrategy='" + executorBlockStrategy + '\'' +
+				", executorTimeout=" + executorTimeout +
+				", executorFailRetryCount=" + executorFailRetryCount +
+				", glueType='" + glueType + '\'' +
+				", glueSource='" + glueSource + '\'' +
+				", glueRemark='" + glueRemark + '\'' +
+				", glueUpdatetime=" + glueUpdatetime +
+				", childJobId='" + childJobId + '\'' +
+				", triggerStatus=" + triggerStatus +
+				", triggerLastTime=" + triggerLastTime +
+				", triggerNextTime=" + triggerNextTime +
+				", alarmFlag='" + alarmFlag + '\'' +
+				", messageId='" + messageId + '\'' +
+				'}';
 	}
 }

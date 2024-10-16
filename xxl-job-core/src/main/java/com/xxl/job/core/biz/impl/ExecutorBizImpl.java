@@ -139,11 +139,13 @@ public class ExecutorBizImpl implements ExecutorBiz {
         }
 
         // replace thread (new or exists invalid)
+        // 执行器注册线程
         if (jobThread == null) {
             jobThread = XxlJobExecutor.registJobThread(triggerParam.getJobId(), jobHandler, removeOldReason);
         }
 
         // push data to queue
+        // 执行线程 将调度参数推入调度队列
         ReturnT<String> pushResult = jobThread.pushTriggerQueue(triggerParam);
         return pushResult;
     }
@@ -153,6 +155,8 @@ public class ExecutorBizImpl implements ExecutorBiz {
         // kill handlerThread, and create new one
         JobThread jobThread = XxlJobExecutor.loadJobThread(killParam.getJobId());
         if (jobThread != null) {
+            // 删除参数：包括要删除的线程的id
+            // 执行器删除线程
             XxlJobExecutor.removeJobThread(killParam.getJobId(), "scheduling center kill job.");
             return ReturnT.SUCCESS;
         }
@@ -163,8 +167,10 @@ public class ExecutorBizImpl implements ExecutorBiz {
     @Override
     public ReturnT<LogResult> log(LogParam logParam) {
         // log filename: logPath/yyyy-MM-dd/9999.log
+        // filename即文件路径 父目录为日期 子目录为日志id
         String logFileName = XxlJobFileAppender.makeLogFileName(new Date(logParam.getLogDateTim()), logParam.getLogId());
 
+        // 读取日志文件中的日志
         LogResult logResult = XxlJobFileAppender.readLog(logFileName, logParam.getFromLineNum());
         return new ReturnT<LogResult>(logResult);
     }

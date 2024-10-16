@@ -132,6 +132,7 @@ public class JobLogController {
             throw new RuntimeException(I18nUtil.getString("joblog_logid_unvalid"));
 		}
 
+		// code传到detail.ftl 再保存到变量传到js
         model.addAttribute("triggerCode", jobLog.getTriggerCode());
         model.addAttribute("handleCode", jobLog.getHandleCode());
         model.addAttribute("logId", jobLog.getId());
@@ -216,6 +217,7 @@ public class JobLogController {
 
 		Date clearBeforeTime = null;
 		int clearBeforeNum = 0;
+		// 	设置清理的时时间段
 		if (type == 1) {
 			clearBeforeTime = DateUtil.addMonths(new Date(), -1);	// 清理一个月之前日志数据
 		} else if (type == 2) {
@@ -225,6 +227,7 @@ public class JobLogController {
 		} else if (type == 4) {
 			clearBeforeTime = DateUtil.addYears(new Date(), -1);	// 清理一年之前日志数据
 		} else if (type == 5) {
+			// 设置清理的条数
 			clearBeforeNum = 1000;		// 清理一千条以前日志数据
 		} else if (type == 6) {
 			clearBeforeNum = 10000;		// 清理一万条以前日志数据
@@ -238,6 +241,7 @@ public class JobLogController {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("joblog_clean_type_unvalid"));
 		}
 
+		//
 		List<Long> logIds = null;
 		do {
 			logIds = xxlJobLogDao.findClearLogIds(jobGroup, jobId, clearBeforeTime, clearBeforeNum, 1000);

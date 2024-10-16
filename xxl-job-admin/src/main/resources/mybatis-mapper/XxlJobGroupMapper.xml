@@ -10,6 +10,8 @@
 		<result column="address_type" property="addressType" />
 		<result column="address_list" property="addressList" />
 		<result column="update_time" property="updateTime" />
+		<result column="alarm_flag" property="groupAlarmFlag" />
+		<result column="message_id" property="groupMessageId" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -18,7 +20,9 @@
 		t.title,
 		t.address_type,
 		t.address_list,
-		t.update_time
+		t.update_time,
+		t.alarm_flag,
+		t.message_id
 	</sql>
 <!--查询所有执行器-->
 	<select id="findAll" resultMap="XxlJobGroup">
@@ -45,7 +49,9 @@
 			`title` = #{title},
 			`address_type` = #{addressType},
 			`address_list` = #{addressList},
-			`update_time` = #{updateTime}
+			`update_time` = #{updateTime},
+			`alarm_flag` = #{groupAlarmFlag},
+			`message_id` = #{groupMessageId}
 		WHERE id = #{id}
 	</update>
 <!--删除执行器-->

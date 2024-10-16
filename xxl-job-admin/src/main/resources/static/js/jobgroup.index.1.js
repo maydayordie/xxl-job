@@ -282,6 +282,19 @@ $(function() {
 		}
 	});
 
+///////////////////////////
+	// 消息id框显示隐藏
+	$("#updateModal .form input[name='groupAlarmFlag']").change(function(){
+		if ($(this).is(':checked')){
+			$(this).parents("form").find("#groupMessageId").show();
+			$("#updateModal .form input[name='groupMessageId']").prop("disabled", false);
+		}else {
+			$(this).parents("form").find("#groupMessageId").hide();
+			$("#updateModal .form input[name='groupMessageId']").prop("disabled", true);
+		}
+	});
+/////////////////////////
+
 	// opt_edit
 	$("#jobgroup_list").on('click', '.opt_edit',function() {
 		var id = $(this).parents('ul').attr("_id");
@@ -296,6 +309,18 @@ $(function() {
 		$("#updateModal .form input[name='addressType'][value='"+ row.addressType +"']").click();
 		// 机器地址
 		$("#updateModal .form textarea[name='addressList']").val( row.addressList );
+///////////////////////////////
+		// 初始化滑动开关是否选中
+		if (row.groupAlarmFlag == '1'){
+			$("#updateModal .form input[name='groupAlarmFlag']").prop("checked", true);
+		} else{
+			$("#updateModal .form input[name='groupAlarmFlag']").prop("checked", false);
+		}
+		// 初始化消息id
+		$("#updateModal .form input[name='groupMessageId']").val( row.groupMessageId );
+		// 初始化消息id框显示隐藏
+		$("#updateModal .form input[name='groupAlarmFlag']").change();
+/////////////////////////////////////
 
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});

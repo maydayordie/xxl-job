@@ -109,7 +109,7 @@
 			</if>
 		</trim>
 	</select>
-	
+<!--	日志的细节页面：传入logid返回log-->
 	<select id="load" parameterType="java.lang.Long" resultMap="XxlJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
@@ -227,6 +227,9 @@
 		</foreach>
 	</delete>
 
+	<!-- 当调度失败 或 执行失败的时候 告警状态为0的时候 告警 -->
+	<!-- 调度成功未执行 或 执行成功时 不报警-->
+	<!-- 调度成功执行错误 或 调度失败未执行 报警-->
 	<select id="findFailJobLogIds" resultType="long" >
 		SELECT id FROM `xxl_job_log`
 		WHERE !(

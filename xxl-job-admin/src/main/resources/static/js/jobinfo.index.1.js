@@ -10,7 +10,14 @@ $(function() {
 			type:"post",
 	        data : function ( d ) {
 	        	var obj = {};
-	        	obj.jobGroup = $('#jobGroup').val();
+				obj.jobGroup = 0
+				var jobGroupTitle = $('#jobGroup').val();
+				if (jobGroupTitle){
+					var jobGroupId = $('#jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id')
+					if (jobGroupId){
+						obj.jobGroup = jobGroupId
+					}
+				}
                 obj.triggerStatus = $('#triggerStatus').val();
                 obj.jobDesc = $('#jobDesc').val();
 	        	obj.executorHandler = $('#executorHandler').val();
@@ -30,28 +37,16 @@ $(function() {
 						"visible" : true,
 						"width":'7%'
 					},
-	                {
-	                	"data": 'jobGroup',
-	                	"visible" : false,
-	                	"render": function ( data, type, row ) {
-	            			var groupMenu = $("#jobGroup").find("option");
-	            			for ( var index in $("#jobGroup").find("option")) {
-	            				if ($(groupMenu[index]).attr('value') == data) {
-									return $(groupMenu[index]).html();
-								}
-							}
-	            			return data;
-	            		}
-            		},
+					{ "data": 'jobGroup', "visible" : false},
 	                {
 	                	"data": 'jobDesc',
 						"visible" : true,
-						"width":'25%'
+						"width":'15%'
 					},
 					{
 						"data": 'scheduleType',
 						"visible" : true,
-						"width":'13%',
+						"width":'18%',
 						"render": function ( data, type, row ) {
 							if (row.scheduleConf) {
 								return row.scheduleType + '：'+ row.scheduleConf;
@@ -106,7 +101,7 @@ $(function() {
 	                },
 	                {
 						"data": I18n.system_opt ,
-						"width":'10%',
+						"width":'15%',
 	                	"render": function ( data, type, row ) {
 	                		return function(){
 
@@ -200,9 +195,13 @@ $(function() {
 
 	// jobGroup change
 	$('#jobGroup').on('change', function(){
-        //reload
-        var jobGroup = $('#jobGroup').val();
-        window.location.href = base_url + "/jobinfo?jobGroup=" + jobGroup;
+        var jobGroupTitle = $('#jobGroup').val()
+		if (jobGroupTitle){
+			var jobGroup = $('#jobGroupList > option[value='+ jobGroupTitle +']').attr('data-id');
+			if (jobGroup){
+				window.location.href = base_url + "/jobinfo?jobGroup=" + jobGroup;
+			}
+		}
     });
 
 	// job operate
@@ -372,6 +371,11 @@ $(function() {
 
     });
 
+	// 页面加载时显示模态框
+	$(document).ready(function() {
+		$('#testModal').modal({backdrop: false, keyboard: false}).modal('show');
+	});
+
 	// add
 	$(".add").click(function(){
 
@@ -457,6 +461,7 @@ $(function() {
 			$("#addModal .form input[name='scheduleConf']").val( scheduleConf );
 
         	$.post(base_url + "/jobinfo/add",  $("#addModal .form").serialize(), function(data, status) {
+				// 任务添加成功
     			if (data.code == "200") {
 					$('#addModal').modal('hide');
 					layer.open({
@@ -469,6 +474,7 @@ $(function() {
 							//window.location.reload();
 						}
 					});
+				// 任务添加失败 如：“调度类型非法”
     			} else {
 					layer.open({
 						title: I18n.system_tips ,
@@ -480,6 +486,7 @@ $(function() {
     		});
 		}
 	});
+	// 当模态框完全时 重置表单
 	$("#addModal").on('hide.bs.modal', function () {
         addModalValidate.resetForm();
 		$("#addModal .form")[0].reset();
@@ -490,14 +497,26 @@ $(function() {
 	});
 
 	// scheduleType change
+	// 但调度类型改变时 调度配置全部隐藏 该类型的配置显示
 	$(".scheduleType").change(function(){
 		var scheduleType = $(this).val();
 		$(this).parents("form").find(".schedule_conf").hide();
 		$(this).parents("form").find(".schedule_conf_" + scheduleType).show();
-
 	});
+///////////////////////////
+	// 消息id框显示隐藏
+	$("#updateModal .form input[name='alarmFlag']").change(function(){
+		if ($(this).is(':checked')){
+			$(this).parents("form").find("#messageId").show();
+			$("#updateModal .form input[name='messageId']").prop("disabled", false);
+		}else {
+			$(this).parents("form").find("#messageId").hide();
+			$("#updateModal .form input[name='messageId']").prop("disabled", true);
+		}
+	});
+/////////////////////////
 
-    // glueType change
+	// glueType change
     $(".glueType").change(function(){
 		// executorHandler
         var $executorHandler = $(this).parents("form").find("input[name='executorHandler']");
@@ -542,7 +561,21 @@ $(function() {
 		$("#updateModal .form input[name='jobDesc']").val( row.jobDesc );
 		$("#updateModal .form input[name='author']").val( row.author );
 		$("#updateModal .form input[name='alarmEmail']").val( row.alarmEmail );
-
+///////////////////////////////
+		$(document).ready(function() {
+			console.log(row);
+		});
+		// 初始化滑动开关是否选中
+		if (row.alarmFlag == '1'){
+			$("#updateModal .form input[name='alarmFlag']").prop("checked", true);
+		} else{
+			$("#updateModal .form input[name='alarmFlag']").prop("checked", false);
+		}
+		// 初始化消息id
+		$("#updateModal .form input[name='messageId']").val( row.messageId );
+		// 初始化消息id框显示隐藏
+		$("#updateModal .form input[name='alarmFlag']").change();
+/////////////////////////////////////
 		// fill trigger
 		$('#updateModal .form select[name=scheduleType] option[value='+ row.scheduleType +']').prop('selected', true);
 		$("#updateModal .form input[name='scheduleConf']").val( row.scheduleConf );
@@ -555,6 +588,7 @@ $(function() {
 		}
 
 		// 》init scheduleType
+		// 因为Conf的值只有在change后才有 所以加载页面时需要change获取Conf值
 		$("#updateModal .form select[name=scheduleType]").change();
 
 		// fill job
@@ -576,10 +610,12 @@ $(function() {
 		$('#updateModal .form select[name=executorBlockStrategy] option[value='+ row.executorBlockStrategy +']').prop('selected', true);
 		$("#updateModal .form input[name='executorTimeout']").val( row.executorTimeout );
         $("#updateModal .form input[name='executorFailRetryCount']").val( row.executorFailRetryCount );
+        // $("#updateModal .form input[name='alarmFlag']").val( 'on' );
 
 		// show
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
+
 	var updateModalValidate = $("#updateModal .form").validate({
 		errorElement : 'span',
         errorClass : 'help-block',
@@ -626,7 +662,6 @@ $(function() {
             }
             $("#updateModal .form input[name='executorFailRetryCount']").val(executorFailRetryCount);
 
-
 			// process schedule_conf
 			var scheduleType = $("#updateModal .form select[name='scheduleType']").val();
 			var scheduleConf;
@@ -641,6 +676,7 @@ $(function() {
 
 			// post
     		$.post(base_url + "/jobinfo/update", $("#updateModal .form").serialize(), function(data, status) {
+				// 更新成功弹窗 icon打勾勾
     			if (data.code == "200") {
 					$('#updateModal').modal('hide');
 					layer.open({
@@ -653,6 +689,7 @@ $(function() {
 							jobTable.fnDraw();
 						}
 					});
+				// 任务更新失败 如：“调度类型非法” icon打叉叉
     			} else {
 					layer.open({
 						title: I18n.system_tips ,
@@ -664,6 +701,7 @@ $(function() {
     		});
 		}
 	});
+	// 更新框完全隐藏时 重置表单
 	$("#updateModal").on('hide.bs.modal', function () {
         updateModalValidate.resetForm();
         $("#updateModal .form")[0].reset();
@@ -735,5 +773,4 @@ $(function() {
 		// show
 		$('#addModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
-
 });
